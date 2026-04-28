@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
         if (respuestaUsuario == respuestaCorrecta)
         {
             Debug.Log("¡Correcto!");
-            mensajeFeedback.text = "¡Excelente!";
+            mensajeFeedback.text = "Excelente, Ataca!!";
             intentos = 0;
             GenerarOperacion(); // Pasamos a la siguiente
             // Aquí luego añadirás el sonido y daño al enemigo
