@@ -4,7 +4,7 @@ public class TestBattleStarter : MonoBehaviour
 {
     public EnemyData testEnemy;
 
-    void Start()
+    private void Awake()
     {
         // Simula que el GameManager ya tiene un enemigo cargado
         if (GameManager.Instance != null && testEnemy != null)

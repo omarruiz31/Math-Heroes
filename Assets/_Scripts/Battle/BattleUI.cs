@@ -29,6 +29,7 @@ public class BattleUI : MonoBehaviour
     public GameObject resultPanel;
     public TextMeshProUGUI resultText;
     public Button returnButton;
+    public Button exitButton;
 
     [Header("Animaciones")]
     public Animator enemyAnimator;
@@ -52,12 +53,21 @@ public class BattleUI : MonoBehaviour
         feedbackText.text      = "";
         correctAnswerText.text = "";
 
+        submitButton.onClick.RemoveAllListeners();
         submitButton.onClick.AddListener(() =>
             BattleManager.Instance.SubmitAnswer(answerInput.text));
 
         // Enter también envía la respuesta
+        answerInput.onSubmit.RemoveAllListeners();
         answerInput.onSubmit.AddListener(val =>
             BattleManager.Instance.SubmitAnswer(val));
+
+        returnButton.onClick.RemoveAllListeners();
+        if (exitButton != null)
+        {
+            exitButton.onClick.RemoveAllListeners();
+            exitButton.onClick.AddListener(ReturnToMap);
+        }
     }
 
     public void ShowQuestion(string question, int timeLimit)
@@ -67,6 +77,7 @@ public class BattleUI : MonoBehaviour
         feedbackText.text  = "";
         correctAnswerText.text = "";
         answerInput.interactable = true;
+        submitButton.interactable = true;
         answerInput.ActivateInputField();
 
         if (timerCoroutine != null) StopCoroutine(timerCoroutine);
@@ -85,6 +96,7 @@ public class BattleUI : MonoBehaviour
         }
         timerText.text = "0";
         answerInput.interactable = false;
+        submitButton.interactable = false;
         BattleManager.Instance.TimeOut();
     }
 
@@ -92,14 +104,16 @@ public class BattleUI : MonoBehaviour
     {
         if (timerCoroutine != null) StopCoroutine(timerCoroutine);
         answerInput.interactable = false;
+        submitButton.interactable = false;
     }
 
-    public void ShowFeedback(bool correct, int correctAnswer)
+    public void ShowFeedback(bool correct, int correctAnswer, string explanation)
     {
         feedbackText.text  = correct ? "¡Correcto! ✓" : "¡Incorrecto! ✗";
         feedbackText.color = correct ? Color.green : Color.red;
-        if (!correct)
-            correctAnswerText.text = $"La respuesta era: {correctAnswer}";
+        correctAnswerText.text = correct
+            ? explanation
+            : $"La respuesta era: {correctAnswer}\n{explanation}";
     }
 
     public void UpdateEnemyHP(int current, int max)
@@ -128,6 +142,13 @@ public class BattleUI : MonoBehaviour
     {
         resultPanel.SetActive(true);
         resultText.text = playerWon ? "¡Victoria! " : "Derrota... :(";
-        returnButton.onClick.AddListener(() => GameManager.Instance.ReturnToMap());
+        returnButton.onClick.RemoveAllListeners();
+        returnButton.onClick.AddListener(ReturnToMap);
+    }
+
+    private void ReturnToMap()
+    {
+        StopTimer();
+        GameManager.Instance.ReturnToMap();
     }
 }

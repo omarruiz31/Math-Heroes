@@ -16,11 +16,28 @@ public class BattleManager : MonoBehaviour
     private QuestionGenerator.Question currentQuestion;
     private bool waitingForAnswer = false;
 
-    void Awake() { Instance = this; }
-
-    void Start()
+    private void Awake()
     {
+        Instance = this;
+    }
+
+    private void Start()
+    {
+        if (GameManager.Instance == null)
+        {
+            Debug.LogError("BattleManager necesita un GameManager activo en la escena.");
+            ui.ShowResult(false);
+            return;
+        }
+
         enemyData = GameManager.Instance.currentEnemy;
+        if (enemyData == null)
+        {
+            Debug.LogError("No hay enemigo seleccionado para la batalla.");
+            ui.ShowResult(false);
+            return;
+        }
+
         enemyCurrentHP = enemyData.maxHP;
 
         ui.Setup(enemyData, GameManager.Instance.playerMaxHP,
@@ -51,7 +68,7 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            ui.ShowFeedback(false, currentQuestion.correctAnswer);
+            ui.ShowFeedback(false, currentQuestion.correctAnswer, currentQuestion.explanation);
             StartCoroutine(EnemyAttackTurn());
         }
     }
@@ -61,7 +78,7 @@ public class BattleManager : MonoBehaviour
     {
         if (!waitingForAnswer) return;
         waitingForAnswer = false;
-        ui.ShowFeedback(false, currentQuestion.correctAnswer);
+        ui.ShowFeedback(false, currentQuestion.correctAnswer, currentQuestion.explanation);
         StartCoroutine(EnemyAttackTurn());
     }
 
@@ -70,7 +87,7 @@ public class BattleManager : MonoBehaviour
         int damage = Random.Range(18, 30); // puedes conectar esto a stats del jugador
         enemyCurrentHP = Mathf.Max(0, enemyCurrentHP - damage);
 
-        ui.ShowFeedback(true, currentQuestion.correctAnswer);
+        ui.ShowFeedback(true, currentQuestion.correctAnswer, currentQuestion.explanation);
         ui.UpdateEnemyHP(enemyCurrentHP, enemyData.maxHP);
         ui.PlayEnemyHitAnim();
 
