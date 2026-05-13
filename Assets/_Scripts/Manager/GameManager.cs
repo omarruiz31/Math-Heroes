@@ -32,6 +32,9 @@ public class GameManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         if (audioSource != null && !audioSource.isPlaying)
             audioSource.Play();
+
+        // Aplica el volumen guardado por el menú de opciones
+        AudioListener.volume = PlayerPrefs.GetFloat("MusicVolume", 0.75f);
     }
 
     public void StartBattle(EnemyData enemy)
