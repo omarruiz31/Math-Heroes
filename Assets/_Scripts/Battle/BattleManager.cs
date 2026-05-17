@@ -84,12 +84,21 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator PlayerAttack()
     {
-        int damage = Random.Range(18, 30); // puedes conectar esto a stats del jugador
-        enemyCurrentHP = Mathf.Max(0, enemyCurrentHP - damage);
-
         ui.ShowFeedback(true, currentQuestion.correctAnswer, currentQuestion.explanation);
-        ui.UpdateEnemyHP(enemyCurrentHP, enemyData.maxHP);
-        ui.PlayEnemyHitAnim();
+
+        // ¿El enemigo esquiva?
+        if (enemyAI.TryDodge(enemyData))
+        {
+            ui.ShowFeedback(true, currentQuestion.correctAnswer,
+                "¡Respuesta correcta, pero el enemigo esquivó tu ataque!");
+        }
+        else
+        {
+            int damage = Random.Range(18, 30); // puedes conectar esto a stats del jugador
+            enemyCurrentHP = Mathf.Max(0, enemyCurrentHP - damage);
+            ui.UpdateEnemyHP(enemyCurrentHP, enemyData.maxHP);
+            ui.PlayEnemyHitAnim();
+        }
 
         yield return new WaitForSeconds(1.2f);
 

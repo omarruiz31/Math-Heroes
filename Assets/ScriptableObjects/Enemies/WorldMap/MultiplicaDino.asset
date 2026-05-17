@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: Dino Multiplicador
   sprite: {fileID: 21300000, guid: 671a594cd6415e04ba0bf26a8eae3621, type: 3}
+  animatorController: {fileID: 9100000, guid: ee4cf4b2a666e004882e6e2c0716247d, type: 2}
   maxHP: 120
   attackDamage: 16
   defense: 6
@@ -24,3 +25,7 @@ MonoBehaviour:
   minNumber: 2
   maxNumber: 12
   questionTimeLimit: 13
+  damageMultiplier: 1
+  criticalChance: 0
+  criticalBonusDamage: 10
+  dodgeChance: 0

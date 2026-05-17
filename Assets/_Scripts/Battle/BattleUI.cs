@@ -6,7 +6,7 @@ using TMPro;
 public class BattleUI : MonoBehaviour
 {
     [Header("Enemigo")]
-    public Image enemySprite;
+    public SpriteRenderer enemyRenderer;
     public Slider enemyHPBar;
     public TextMeshProUGUI enemyNameText;
     public TextMeshProUGUI enemyHPText;
@@ -35,15 +35,30 @@ public class BattleUI : MonoBehaviour
     public Animator enemyAnimator;
     public Animator playerAnimator;
 
+    [Header("Sonidos")]
+    public AudioSource sfxSource;
+    public AudioClip playerHitSound;
+    public AudioClip enemyHitSound;
+
     private Coroutine timerCoroutine;
 
     public void Setup(EnemyData enemy, int playerMaxHP, int playerHP)
     {
-        enemySprite.sprite  = enemy.sprite;
         enemyNameText.text  = enemy.enemyName;
         enemyHPBar.maxValue = enemy.maxHP;
         enemyHPBar.value    = enemy.maxHP;
         enemyHPText.text    = $"{enemy.maxHP} / {enemy.maxHP}";
+
+        // Configurar el sprite del enemigo
+        if (enemyRenderer != null)
+            enemyRenderer.sprite = enemy.sprite;
+
+        // Si el enemigo tiene animator controller, asignarlo
+        if (enemy.animatorController != null && enemyAnimator != null)
+        {
+            enemyAnimator.runtimeAnimatorController = enemy.animatorController;
+            enemyAnimator.enabled = true;
+        }
 
         playerHPBar.maxValue = playerMaxHP;
         playerHPBar.value    = playerHP;
@@ -89,7 +104,7 @@ public class BattleUI : MonoBehaviour
         int remaining = seconds;
         while (remaining > 0)
         {
-            timerText.text = remaining.ToString();
+            timerText.text = remaining.ToString() + "s";
             timerText.color = remaining <= 5 ? Color.red : Color.white;
             yield return new WaitForSeconds(1f);
             remaining--;
@@ -131,11 +146,13 @@ public class BattleUI : MonoBehaviour
     public void PlayEnemyHitAnim()
     {
         if (enemyAnimator) enemyAnimator.SetTrigger("Hit");
+        if (sfxSource && enemyHitSound) sfxSource.PlayOneShot(enemyHitSound);
     }
 
     public void PlayPlayerHitAnim()
     {
         if (playerAnimator) playerAnimator.SetTrigger("Hit");
+        if (sfxSource && playerHitSound) sfxSource.PlayOneShot(playerHitSound);
     }
 
     public void ShowResult(bool playerWon)

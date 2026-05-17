@@ -3,6 +3,7 @@ using UnityEngine;
 public class WorldMapBattleZone : MonoBehaviour
 {
     [SerializeField] private EnemyData enemy;
+    [SerializeField] private BattleEnvironmentData environment;
     [SerializeField] private string zoneName = "Zona";
     [SerializeField] private float entryDelay = 0.25f;
     [SerializeField] private float triggerRadius = 1.25f;
@@ -57,6 +58,6 @@ public class WorldMapBattleZone : MonoBehaviour
             return;
         }
 
-        GameManager.Instance.StartBattle(enemy);
+        GameManager.Instance.StartBattle(enemy, environment);
     }
 }
