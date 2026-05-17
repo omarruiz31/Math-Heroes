@@ -11,6 +11,7 @@ public class WorldMapPlayerController : MonoBehaviour
     [SerializeField] private Vector2 maxBounds = new Vector2(13.5f, 7f);
 
     private Rigidbody2D rb;
+    private Animator animator;
     private Vector2 moveInput;
     private Vector3 baseScale;
 
@@ -32,6 +33,7 @@ public class WorldMapPlayerController : MonoBehaviour
         }
 
         baseScale = transform.localScale;
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -43,6 +45,10 @@ public class WorldMapPlayerController : MonoBehaviour
             float facing = moveInput.x < 0f ? -1f : 1f;
             transform.localScale = new Vector3(Mathf.Abs(baseScale.x) * facing, baseScale.y, baseScale.z);
         }
+
+        // Actualizar animación
+        if (animator != null)
+            animator.SetFloat("Speed", moveInput.sqrMagnitude);
     }
 
     private void FixedUpdate()

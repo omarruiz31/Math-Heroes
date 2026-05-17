@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Estado actual")]
     public EnemyData currentEnemy;
+    public BattleEnvironmentData currentEnvironment;
     public int playerMaxHP = 100;
     public int playerCurrentHP = 100;
 
@@ -32,9 +33,12 @@ public class GameManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         if (audioSource != null && !audioSource.isPlaying)
             audioSource.Play();
+
+        // Aplica el volumen guardado por el menú de opciones
+        AudioListener.volume = PlayerPrefs.GetFloat("MusicVolume", 0.75f);
     }
 
-    public void StartBattle(EnemyData enemy)
+    public void StartBattle(EnemyData enemy, BattleEnvironmentData environment = null)
     {
         if (enemy == null)
         {
@@ -43,6 +47,7 @@ public class GameManager : MonoBehaviour
         }
 
         currentEnemy = enemy;
+        currentEnvironment = environment;
         SceneManager.LoadScene(BattleSceneName);
     }
 
