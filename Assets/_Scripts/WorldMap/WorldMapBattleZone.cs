@@ -8,7 +8,18 @@ public class WorldMapBattleZone : MonoBehaviour
     [SerializeField] private float entryDelay = 0.25f;
     [SerializeField] private float triggerRadius = 1.25f;
 
+    [Header("Progresión (RF 05)")]
+    [Tooltip("Si está vacío, la zona siempre está desbloqueada")]
+    [SerializeField] private string requiredUnlockName = "";
+    [Tooltip("Nombre de la zona que se desbloquea al ganar esta batalla")]
+    [SerializeField] private string zoneToUnlockOnWin = "";
+
+    [Header("Visual de zona bloqueada")]
+    [SerializeField] private Color lockedTint = new Color(0.3f, 0.3f, 0.3f, 0.8f);
+
     private bool enteringBattle;
+    private bool isLocked;
+    private SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
@@ -18,7 +29,40 @@ public class WorldMapBattleZone : MonoBehaviour
 
         zoneCollider.isTrigger = true;
         zoneCollider.radius = triggerRadius;
+
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
+
+    private void Start()
+    {
+        UpdateLockState();
+    }
+
+    /// <summary>
+    /// Revisa si esta zona está bloqueada según el progreso del jugador.
+    /// </summary>
+    public void UpdateLockState()
+    {
+        // Si no tiene nombre de desbloqueo, siempre está abierta
+        if (string.IsNullOrEmpty(requiredUnlockName))
+        {
+            isLocked = false;
+        }
+        else if (GameManager.Instance != null)
+        {
+            isLocked = !GameManager.Instance.IsZoneUnlocked(requiredUnlockName);
+        }
+
+        // Aplicar tinte visual
+        if (spriteRenderer != null)
+            spriteRenderer.color = isLocked ? lockedTint : Color.white;
+    }
+
+    /// <summary>
+    /// Nombre de la zona que se desbloquea al ganar aquí.
+    /// El BattleManager lo usa al llamar OnBattleWon().
+    /// </summary>
+    public string ZoneToUnlockOnWin => zoneToUnlockOnWin;
 
     public void Configure(EnemyData zoneEnemy, string displayName)
     {
@@ -29,6 +73,12 @@ public class WorldMapBattleZone : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (enteringBattle || other.GetComponent<WorldMapPlayerController>() == null) return;
+
+        if (isLocked)
+        {
+            Debug.Log($"La zona {zoneName} está bloqueada. ¡Derrota enemigos anteriores primero!");
+            return;
+        }
 
         enteringBattle = true;
         Invoke(nameof(StartBattle), entryDelay);
@@ -58,6 +108,8 @@ public class WorldMapBattleZone : MonoBehaviour
             return;
         }
 
+        // Guardar referencia a la zona que se desbloquea al ganar
+        GameManager.Instance.pendingZoneUnlock = zoneToUnlockOnWin;
         GameManager.Instance.StartBattle(enemy, environment);
     }
 }

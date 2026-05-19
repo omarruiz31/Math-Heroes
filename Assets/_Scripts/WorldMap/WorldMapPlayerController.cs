@@ -7,8 +7,8 @@ using UnityEngine.InputSystem;
 public class WorldMapPlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private Vector2 minBounds = new Vector2(-13.5f, -7f);
-    [SerializeField] private Vector2 maxBounds = new Vector2(13.5f, 7f);
+    [SerializeField] private Vector2 minBounds = new Vector2(-100f, -100f);
+    [SerializeField] private Vector2 maxBounds = new Vector2(100f, 100f);
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -23,6 +23,7 @@ public class WorldMapPlayerController : MonoBehaviour
 
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
+        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
 
         CircleCollider2D playerCollider = GetComponent<CircleCollider2D>();
         if (playerCollider == null)
