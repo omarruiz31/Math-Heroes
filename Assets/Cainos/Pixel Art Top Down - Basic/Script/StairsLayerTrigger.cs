@@ -19,6 +19,8 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (direction == Direction.North && other.bounds.center.y > transform.position.y) SetLayerAndSortingLayer(other.gameObject, layerUpper, sortingLayerUpper);
+            else
             if (direction == Direction.South && other.bounds.center.y < transform.position.y) SetLayerAndSortingLayer(other.gameObject, layerUpper, sortingLayerUpper);
             else
             if (direction == Direction.West && other.bounds.center.x < transform.position.x) SetLayerAndSortingLayer(other.gameObject, layerUpper, sortingLayerUpper);
@@ -29,6 +31,8 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private void OnTriggerExit2D(Collider2D other)
         {
+            if (direction == Direction.North && other.bounds.center.y > transform.position.y) SetLayerAndSortingLayer(other.gameObject, layerLower, sortingLayerLower);
+            else
             if (direction == Direction.South && other.bounds.center.y < transform.position.y) SetLayerAndSortingLayer(other.gameObject, layerLower, sortingLayerLower);
             else
             if (direction == Direction.West && other.bounds.center.x < transform.position.x) SetLayerAndSortingLayer(other.gameObject, layerLower, sortingLayerLower);
