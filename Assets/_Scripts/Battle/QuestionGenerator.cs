@@ -8,6 +8,12 @@ public class QuestionGenerator : MonoBehaviour
         public string text;
         public int correctAnswer;
         public string explanation;
+        /// <summary>Tipo de operación: "+", "-", "×", "÷"</summary>
+        public string operation;
+        /// <summary>Primer número de la operación</summary>
+        public int numberA;
+        /// <summary>Segundo número de la operación</summary>
+        public int numberB;
     }
 
     public Question GenerateQuestion(EnemyData enemy)
@@ -61,7 +67,10 @@ public class QuestionGenerator : MonoBehaviour
         {
             text = $"{a} {op} {b} = ?",
             correctAnswer = answer,
-            explanation = explanation
+            explanation = explanation,
+            operation = op,
+            numberA = a,
+            numberB = b
         };
     }
 }

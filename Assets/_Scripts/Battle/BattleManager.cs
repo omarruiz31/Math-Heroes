@@ -15,6 +15,7 @@ public class BattleManager : MonoBehaviour
     private int enemyCurrentHP;
     private QuestionGenerator.Question currentQuestion;
     private bool waitingForAnswer = false;
+    private float questionStartTime;  // Tiempo en que se mostró la pregunta actual
 
     private void Awake()
     {
@@ -51,6 +52,7 @@ public class BattleManager : MonoBehaviour
 
         currentQuestion = questionGenerator.GenerateQuestion(enemyData);
         ui.ShowQuestion(currentQuestion.text, enemyData.questionTimeLimit);
+        questionStartTime = Time.time;
         waitingForAnswer = true;
     }
 
@@ -61,13 +63,32 @@ public class BattleManager : MonoBehaviour
         waitingForAnswer = false;
         ui.StopTimer();
 
-        if (int.TryParse(input, out int playerAnswer) &&
-            playerAnswer == currentQuestion.correctAnswer)
+        float timeUsed = Time.time - questionStartTime;
+        int parsedAnswer = 0;
+        bool parsed = int.TryParse(input, out parsedAnswer);
+        bool isCorrect = parsed && parsedAnswer == currentQuestion.correctAnswer;
+
+        // Registrar la pregunta en el historial detallado
+        string enemyName = enemyData != null ? enemyData.enemyName : "Desconocido";
+        GameManager.Instance.playerData.RecordQuestion(
+            currentQuestion.operation,
+            currentQuestion.numberA,
+            currentQuestion.numberB,
+            currentQuestion.correctAnswer,
+            parsed ? parsedAnswer : -999,
+            isCorrect,
+            timeUsed,
+            enemyName
+        );
+
+        if (isCorrect)
         {
+            GameManager.Instance.battleCorrectAnswers++;
             StartCoroutine(PlayerAttack());
         }
         else
         {
+            GameManager.Instance.battleWrongAnswers++;
             ui.ShowFeedback(false, currentQuestion.correctAnswer, currentQuestion.explanation);
             StartCoroutine(EnemyAttackTurn());
         }
@@ -78,6 +99,23 @@ public class BattleManager : MonoBehaviour
     {
         if (!waitingForAnswer) return;
         waitingForAnswer = false;
+
+        float timeUsed = Time.time - questionStartTime;
+
+        // Registrar timeout como respuesta incorrecta
+        string enemyName = enemyData != null ? enemyData.enemyName : "Desconocido";
+        GameManager.Instance.playerData.RecordQuestion(
+            currentQuestion.operation,
+            currentQuestion.numberA,
+            currentQuestion.numberB,
+            currentQuestion.correctAnswer,
+            -999,  // No respondió
+            false,
+            timeUsed,
+            enemyName
+        );
+
+        GameManager.Instance.battleWrongAnswers++;
         ui.ShowFeedback(false, currentQuestion.correctAnswer, currentQuestion.explanation);
         StartCoroutine(EnemyAttackTurn());
     }
@@ -126,6 +164,13 @@ public class BattleManager : MonoBehaviour
 
     void EndBattle(bool playerWon)
     {
+        string enemyName = enemyData != null ? enemyData.enemyName : "Desconocido";
+
+        if (playerWon)
+            GameManager.Instance.OnBattleWon(enemyName);
+        else
+            GameManager.Instance.OnBattleLost(enemyName);
+
         ui.ShowResult(playerWon);
     }
 }

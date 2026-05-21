@@ -26,6 +26,9 @@ public class PlayerData
     // ─── Historial de desempeño (RF 10) ───
     public List<BattleRecord> battleHistory = new List<BattleRecord>();
 
+    // ─── Historial detallado de preguntas individuales ───
+    public List<QuestionRecord> questionHistory = new List<QuestionRecord>();
+
     // ─── Estadísticas globales ───
     public int totalCorrectAnswers = 0;
     public int totalWrongAnswers = 0;
@@ -116,6 +119,123 @@ public class PlayerData
         totalWrongAnswers += wrongAnswers;
         if (won) totalBattlesWon++;
         else totalBattlesLost++;
+    }
+
+    // ═══════════════════════════════════════════
+    //  REGISTRO DE PREGUNTAS INDIVIDUALES
+    // ═══════════════════════════════════════════
+
+    /// <summary>
+    /// Registra una pregunta individual respondida por el alumno.
+    /// </summary>
+    public void RecordQuestion(string operation, int numberA, int numberB,
+                               int correctAnswer, int playerAnswer,
+                               bool wasCorrect, float timeUsed, string levelName)
+    {
+        var record = new QuestionRecord
+        {
+            operation = operation,
+            numberA = numberA,
+            numberB = numberB,
+            correctAnswer = correctAnswer,
+            playerAnswer = playerAnswer,
+            wasCorrect = wasCorrect,
+            timeUsed = timeUsed,
+            date = DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
+            levelName = levelName
+        };
+
+        questionHistory.Add(record);
+    }
+
+    // ═══════════════════════════════════════════
+    //  MÉTODOS DE CONSULTA ESTADÍSTICA
+    // ═══════════════════════════════════════════
+
+    /// <summary>
+    /// Porcentaje de acierto para una operación específica ("+", "-", "×", "÷").
+    /// Retorna -1 si no hay datos para esa operación.
+    /// </summary>
+    public float GetAccuracyByOperation(string operation)
+    {
+        int total = 0;
+        int correct = 0;
+
+        foreach (var q in questionHistory)
+        {
+            if (q.operation == operation)
+            {
+                total++;
+                if (q.wasCorrect) correct++;
+            }
+        }
+
+        if (total == 0) return -1f;
+        return (correct / (float)total) * 100f;
+    }
+
+    /// <summary>
+    /// Porcentaje de acierto global del alumno.
+    /// Retorna -1 si no hay datos.
+    /// </summary>
+    public float GetOverallAccuracy()
+    {
+        if (questionHistory.Count == 0) return -1f;
+
+        int correct = 0;
+        foreach (var q in questionHistory)
+        {
+            if (q.wasCorrect) correct++;
+        }
+
+        return (correct / (float)questionHistory.Count) * 100f;
+    }
+
+    /// <summary>
+    /// Total de preguntas respondidas.
+    /// </summary>
+    public int GetTotalQuestionsAnswered()
+    {
+        return questionHistory.Count;
+    }
+
+    /// <summary>
+    /// Retorna las últimas N preguntas respondidas.
+    /// </summary>
+    public List<QuestionRecord> GetRecentQuestions(int count)
+    {
+        int start = Mathf.Max(0, questionHistory.Count - count);
+        int length = Mathf.Min(count, questionHistory.Count);
+        return questionHistory.GetRange(start, length);
+    }
+
+    /// <summary>
+    /// Cantidad de preguntas respondidas de una operación específica.
+    /// </summary>
+    public int GetQuestionsCountByOperation(string operation)
+    {
+        int total = 0;
+        foreach (var q in questionHistory)
+        {
+            if (q.operation == operation) total++;
+        }
+        return total;
+    }
+
+    /// <summary>
+    /// Tiempo promedio de respuesta en segundos.
+    /// Retorna -1 si no hay datos.
+    /// </summary>
+    public float GetAverageResponseTime()
+    {
+        if (questionHistory.Count == 0) return -1f;
+
+        float totalTime = 0f;
+        foreach (var q in questionHistory)
+        {
+            totalTime += q.timeUsed;
+        }
+        return totalTime / questionHistory.Count;
     }
 }
 
