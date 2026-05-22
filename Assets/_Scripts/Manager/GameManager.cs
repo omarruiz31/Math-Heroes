@@ -8,7 +8,27 @@ public class GameManager : MonoBehaviour
 
     private AudioSource audioSource;
 
-    public static GameManager Instance { get; private set; }
+    public static GameManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindAnyObjectByType<GameManager>();
+                if (instance == null)
+                {
+                    GameObject go = new GameObject("GameManager (Auto-Created)");
+                    instance = go.AddComponent<GameManager>();
+                }
+            }
+            return instance;
+        }
+        private set
+        {
+            instance = value;
+        }
+    }
+    private static GameManager instance;
 
     [Header("Estado actual")]
     public EnemyData currentEnemy;
@@ -17,7 +37,38 @@ public class GameManager : MonoBehaviour
     public int playerCurrentHP = 100;
 
     // ─── Datos persistentes del jugador ───
-    [HideInInspector] public PlayerData playerData;
+    [HideInInspector] 
+    public PlayerData playerData
+    {
+        get
+        {
+            if (playerDataInstance == null)
+            {
+                string lastPlayer = PlayerPrefs.GetString("CurrentPlayer", "");
+                if (!string.IsNullOrEmpty(lastPlayer) && SaveSystem.ProfileExists(lastPlayer))
+                {
+                    playerDataInstance = SaveSystem.Load(lastPlayer);
+                    profileLoaded = true;
+                }
+                else
+                {
+                    playerDataInstance = new PlayerData();
+                    playerDataInstance.playerName = string.IsNullOrEmpty(lastPlayer) ? "Héroe de Prueba" : lastPlayer;
+                    profileLoaded = true;
+                    if (!string.IsNullOrEmpty(lastPlayer))
+                    {
+                        SaveSystem.Save(playerDataInstance);
+                    }
+                }
+            }
+            return playerDataInstance;
+        }
+        set
+        {
+            playerDataInstance = value;
+        }
+    }
+    private PlayerData playerDataInstance;
     [HideInInspector] public bool profileLoaded = false;
 
     // ─── Estadísticas de la batalla actual (RF 22) ───
@@ -175,6 +226,22 @@ public class GameManager : MonoBehaviour
             HealPlayerToFull();
 
         SceneManager.LoadScene(MapSceneName);
+    }
+
+    /// <summary>
+    /// Reinicia la batalla actual con el mismo enemigo y ambiente.
+    /// </summary>
+    public void RetryBattle()
+    {
+        if (playerCurrentHP <= 0)
+            HealPlayerToFull();
+
+        // Resetear contadores de la batalla
+        battleCorrectAnswers = 0;
+        battleWrongAnswers = 0;
+        battleStartTime = Time.time;
+
+        SceneManager.LoadScene(BattleSceneName);
     }
 
     public void HealPlayerToFull()

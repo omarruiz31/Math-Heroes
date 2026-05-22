@@ -39,34 +39,14 @@ public class MenuSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// Configura el sistema de reporte. Si no hay ReportUI asignado, lo crea.
-    /// Si no hay botón de reporte, lo crea en el panel de opciones.
+    /// Configura el sistema de reporte.
     /// </summary>
     private void SetupReportUI()
     {
-        // Buscar o crear ReportUI
+        // Buscar ReportUI si no está asignado
         if (reportUI == null)
         {
             reportUI = FindAnyObjectByType<ReportUI>();
-        }
-
-        if (reportUI == null)
-        {
-            Canvas canvas = GetComponentInParent<Canvas>();
-            if (canvas == null) canvas = FindAnyObjectByType<Canvas>();
-
-            if (canvas != null)
-            {
-                GameObject reportObj = new GameObject("ReportUI");
-                reportObj.transform.SetParent(canvas.transform, false);
-                reportUI = reportObj.AddComponent<ReportUI>();
-            }
-        }
-
-        // Crear botón de reporte en opciones si no existe
-        if (reportButton == null && optionsMenu != null)
-        {
-            CreateReportButton();
         }
 
         // Conectar el botón al reporte
@@ -78,55 +58,29 @@ public class MenuSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// Crea programáticamente el botón "Reporte del Alumno" en el panel de opciones.
-    /// </summary>
-    private void CreateReportButton()
-    {
-        GameObject btnObj = new GameObject("ReportButton");
-        btnObj.transform.SetParent(optionsMenu.transform, false);
-
-        RectTransform rt = btnObj.AddComponent<RectTransform>();
-        rt.anchorMin = new Vector2(0.25f, 0.02f);
-        rt.anchorMax = new Vector2(0.75f, 0.12f);
-        rt.offsetMin = Vector2.zero;
-        rt.offsetMax = Vector2.zero;
-
-        Image bg = btnObj.AddComponent<Image>();
-        bg.color = new Color(0.2f, 0.5f, 0.8f, 1f);
-
-        reportButton = btnObj.AddComponent<Button>();
-        reportButton.targetGraphic = bg;
-
-        // Color transitions
-        ColorBlock colors = reportButton.colors;
-        colors.normalColor = new Color(0.2f, 0.5f, 0.8f, 1f);
-        colors.highlightedColor = new Color(0.3f, 0.6f, 0.9f, 1f);
-        colors.pressedColor = new Color(0.15f, 0.4f, 0.7f, 1f);
-        reportButton.colors = colors;
-
-        // Texto del botón
-        GameObject textObj = new GameObject("ButtonText");
-        textObj.transform.SetParent(btnObj.transform, false);
-
-        RectTransform textRT = textObj.AddComponent<RectTransform>();
-        textRT.anchorMin = Vector2.zero;
-        textRT.anchorMax = Vector2.one;
-        textRT.offsetMin = Vector2.zero;
-        textRT.offsetMax = Vector2.zero;
-
-        TextMeshProUGUI btnText = textObj.AddComponent<TextMeshProUGUI>();
-        btnText.text = "📊 Reporte del Alumno";
-        btnText.fontSize = 22;
-        btnText.color = Color.white;
-        btnText.alignment = TextAlignmentOptions.Center;
-        btnText.fontStyle = FontStyles.Bold;
-    }
-
-    /// <summary>
     /// Abre el panel de reporte.
     /// </summary>
     public void OpenReport()
     {
+        if (playerNameInput != null && !string.IsNullOrWhiteSpace(playerNameInput.text))
+        {
+            string name = playerNameInput.text.Trim();
+            PlayerPrefs.SetString("CurrentPlayer", name);
+            PlayerPrefs.Save();
+
+            if (GameManager.Instance != null)
+            {
+                if (SaveSystem.ProfileExists(name))
+                {
+                    GameManager.Instance.LoadProfile(name);
+                }
+                else
+                {
+                    GameManager.Instance.CreateProfile(name);
+                }
+            }
+        }
+
         if (reportUI != null)
         {
             reportUI.ShowReport();
@@ -175,9 +129,22 @@ public class MenuSystem : MonoBehaviour
         // Save the profile name
         if (playerNameInput != null)
         {
-            PlayerPrefs.SetString("CurrentPlayer", playerNameInput.text.Trim());
+            string name = playerNameInput.text.Trim();
+            PlayerPrefs.SetString("CurrentPlayer", name);
             PlayerPrefs.Save();
-            Debug.Log("Jugador registrado: " + playerNameInput.text);
+            Debug.Log("Jugador registrado: " + name);
+
+            if (GameManager.Instance != null)
+            {
+                if (SaveSystem.ProfileExists(name))
+                {
+                    GameManager.Instance.LoadProfile(name);
+                }
+                else
+                {
+                    GameManager.Instance.CreateProfile(name);
+                }
+            }
         }
 
         SceneManager.LoadScene("WorldMap");

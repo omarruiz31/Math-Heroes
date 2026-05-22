@@ -10,7 +10,6 @@ using TMPro;
 /// El texto se crea automáticamente — no necesitas configurar nada en la escena.
 /// Solo ajusta los valores en el Inspector si quieres personalizar.
 /// </summary>
-[RequireComponent(typeof(WorldMapBattleZone))]
 public class PortalLabel : MonoBehaviour
 {
     [Header("Texto")]
@@ -137,7 +136,34 @@ public class PortalLabel : MonoBehaviour
         if (!string.IsNullOrEmpty(displayName))
             return displayName;
 
+        // Intentar obtener el destino desde un ScenePortal si existe
+        ScenePortal scenePortal = GetComponent<ScenePortal>();
+        if (scenePortal != null && !string.IsNullOrEmpty(scenePortal.sceneToLoad))
+        {
+            return FormatSceneName(scenePortal.sceneToLoad);
+        }
+
         // Fallback: usar el nombre del GameObject limpio
         return gameObject.name.Replace("_", " ").Replace("Portal", "").Trim();
+    }
+
+    /// <summary>
+    /// Convierte nombres CamelCase como "VillaSuma" o "NivelRestas" a "Villa Suma" o "Nivel Restas".
+    /// </summary>
+    private string FormatSceneName(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return "";
+
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.Append(name[0]);
+        for (int i = 1; i < name.Length; i++)
+        {
+            if (char.IsUpper(name[i]) && !char.IsUpper(name[i - 1]))
+            {
+                sb.Append(" ");
+            }
+            sb.Append(name[i]);
+        }
+        return sb.ToString();
     }
 }

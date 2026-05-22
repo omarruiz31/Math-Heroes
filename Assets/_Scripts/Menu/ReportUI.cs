@@ -7,26 +7,29 @@ using TMPro;
 /// Panel de reporte para la maestra. Muestra estadísticas detalladas
 /// del desempeño del alumno: porcentaje de acierto por operación,
 /// historial de batallas, y preguntas recientes.
-///
-/// Se crea programáticamente — no necesita configuración manual en la escena.
-/// Solo necesita una referencia al Canvas padre.
 /// </summary>
 public class ReportUI : MonoBehaviour
 {
-    [Header("Canvas padre (se asigna automáticamente si está vacío)")]
-    [SerializeField] private Canvas parentCanvas;
-
-    // ─── Referencias internas (se crean programáticamente) ───
-    private GameObject reportPanel;
-    private ScrollRect scrollRect;
-    private TextMeshProUGUI reportContent;
-    private Button closeButton;
-    private bool isBuilt = false;
+    [Header("UI References")]
+    [SerializeField] private GameObject reportPanel;
+    [SerializeField] private ScrollRect scrollRect;
+    [SerializeField] private TextMeshProUGUI reportContent;
+    [SerializeField] private Button closeButton;
+    [SerializeField] private TMP_Dropdown profileDropdown;
 
     private void Awake()
     {
-        if (parentCanvas == null)
-            parentCanvas = GetComponentInParent<Canvas>();
+        if (closeButton != null)
+        {
+            closeButton.onClick.RemoveAllListeners();
+            closeButton.onClick.AddListener(HideReport);
+        }
+
+        if (profileDropdown != null)
+        {
+            profileDropdown.onValueChanged.RemoveAllListeners();
+            profileDropdown.onValueChanged.AddListener(OnProfileChanged);
+        }
     }
 
     /// <summary>
@@ -34,22 +37,87 @@ public class ReportUI : MonoBehaviour
     /// </summary>
     public void ShowReport()
     {
-        if (!isBuilt) BuildReportPanel();
-
         var gm = GameManager.Instance;
-        if (gm == null || gm.playerData == null)
+
+        // Configurar el dropdown con todos los perfiles guardados
+        if (profileDropdown != null)
         {
-            reportContent.text = "<color=#FF6B6B>No hay datos de jugador cargados.</color>\n\nSelecciona un perfil primero.";
-            reportPanel.SetActive(true);
+            profileDropdown.onValueChanged.RemoveAllListeners(); // Evitar disparar eventos durante la inicialización
+            profileDropdown.ClearOptions();
+
+            List<string> profiles = SaveSystem.GetAllProfileNames();
+
+            // Si la lista está vacía, pero hay un jugador actual, lo añadimos
+            if (gm != null && gm.playerData != null && !profiles.Contains(gm.playerData.playerName))
+            {
+                profiles.Add(gm.playerData.playerName);
+            }
+
+            profileDropdown.AddOptions(profiles);
+
+            // Seleccionar por defecto el perfil activo
+            if (gm != null && gm.playerData != null)
+            {
+                int currentIndex = profiles.IndexOf(gm.playerData.playerName);
+                if (currentIndex >= 0)
+                {
+                    profileDropdown.value = currentIndex;
+                }
+            }
+
+            profileDropdown.onValueChanged.AddListener(OnProfileChanged);
+        }
+
+        // Obtener los datos del perfil a mostrar
+        PlayerData activeData = null;
+        if (gm != null && gm.playerData != null)
+        {
+            activeData = gm.playerData;
+        }
+        else if (profileDropdown != null && profileDropdown.options.Count > 0)
+        {
+            string firstProfile = profileDropdown.options[0].text;
+            activeData = SaveSystem.Load(firstProfile);
+        }
+
+        if (activeData == null)
+        {
+            if (reportContent != null)
+                reportContent.text = "<color=#FF6B6B>No hay datos de jugador cargados.</color>\n\nSelecciona un perfil primero.";
+            if (reportPanel != null)
+                reportPanel.SetActive(true);
             return;
         }
 
-        reportContent.text = GenerateReportText(gm.playerData);
-        reportPanel.SetActive(true);
+        if (reportContent != null)
+            reportContent.text = GenerateReportText(activeData);
+        
+        if (reportPanel != null)
+            reportPanel.SetActive(true);
 
         // Scroll hasta arriba
         if (scrollRect != null)
             scrollRect.verticalNormalizedPosition = 1f;
+    }
+
+    /// <summary>
+    /// Se llama cuando se selecciona un perfil diferente en la lista desplegable.
+    /// </summary>
+    private void OnProfileChanged(int index)
+    {
+        if (profileDropdown == null || index < 0 || index >= profileDropdown.options.Count) return;
+
+        string profileName = profileDropdown.options[index].text;
+        PlayerData selectedData = SaveSystem.Load(profileName);
+
+        if (selectedData != null)
+        {
+            if (reportContent != null)
+                reportContent.text = GenerateReportText(selectedData);
+
+            if (scrollRect != null)
+                scrollRect.verticalNormalizedPosition = 1f;
+        }
     }
 
     /// <summary>
@@ -70,12 +138,12 @@ public class ReportUI : MonoBehaviour
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
         // ─── Encabezado ───
-        sb.AppendLine("<size=28><color=#FFD700>📊 REPORTE DE DESEMPEÑO</color></size>");
+        sb.AppendLine("<size=28><color=#FFD700>REPORTE DE DESEMPEÑO</color></size>");
         sb.AppendLine("<color=#AAAAAA>─────────────────────────────────────</color>");
         sb.AppendLine();
 
         // ─── Datos del alumno ───
-        sb.AppendLine("<size=22><color=#4FC3F7>👤 DATOS DEL ALUMNO</color></size>");
+        sb.AppendLine("<size=22><color=#4FC3F7>DATOS DEL ALUMNO</color></size>");
 
         // Nombre con fallback a PlayerPrefs si está vacío
         string displayName = data.playerName;
@@ -89,7 +157,7 @@ public class ReportUI : MonoBehaviour
         sb.AppendLine();
 
         // ─── Resumen general ───
-        sb.AppendLine("<size=22><color=#4FC3F7>📈 RESUMEN GENERAL</color></size>");
+        sb.AppendLine("<size=22><color=#4FC3F7>RESUMEN GENERAL</color></size>");
 
         int totalQuestions = data.GetTotalQuestionsAnswered();
         float overallAccuracy = data.GetOverallAccuracy();
@@ -118,7 +186,7 @@ public class ReportUI : MonoBehaviour
         sb.AppendLine();
 
         // ─── Desglose por operación ───
-        sb.AppendLine("<size=22><color=#4FC3F7>🧮 DESGLOSE POR OPERACIÓN</color></size>");
+        sb.AppendLine("<size=22><color=#4FC3F7>DESGLOSE POR OPERACIÓN</color></size>");
         sb.AppendLine();
 
         string[] operations = { "+", "-", "×", "÷" };
@@ -145,7 +213,7 @@ public class ReportUI : MonoBehaviour
         sb.AppendLine();
 
         // ─── Historial de batallas ───
-        sb.AppendLine("<size=22><color=#4FC3F7>⚔️ HISTORIAL DE BATALLAS</color></size>");
+        sb.AppendLine("<size=22><color=#4FC3F7>HISTORIAL DE BATALLAS</color></size>");
 
         if (data.battleHistory.Count == 0)
         {
@@ -159,8 +227,8 @@ public class ReportUI : MonoBehaviour
             {
                 BattleRecord b = data.battleHistory[i];
                 string result = b.won
-                    ? "<color=#66BB6A>✓ Victoria</color>"
-                    : "<color=#EF5350>✗ Derrota</color>";
+                    ? "<color=#66BB6A>Victoria</color>"
+                    : "<color=#EF5350>Derrota</color>";
 
                 int totalAnswers = b.correctAnswers + b.wrongAnswers;
                 float battleAccuracy = totalAnswers > 0
@@ -179,7 +247,7 @@ public class ReportUI : MonoBehaviour
         sb.AppendLine();
 
         // ─── Últimas 20 preguntas ───
-        sb.AppendLine("<size=22><color=#4FC3F7>📝 ÚLTIMAS 20 PREGUNTAS</color></size>");
+        sb.AppendLine("<size=22><color=#4FC3F7>ULTIMAS 20 PREGUNTAS</color></size>");
 
         List<QuestionRecord> recent = data.GetRecentQuestions(20);
         if (recent.Count == 0)
@@ -192,7 +260,7 @@ public class ReportUI : MonoBehaviour
             for (int i = recent.Count - 1; i >= 0; i--)
             {
                 QuestionRecord q = recent[i];
-                string icon = q.wasCorrect ? "<color=#66BB6A>✓</color>" : "<color=#EF5350>✗</color>";
+                string icon = q.wasCorrect ? "<color=#66BB6A>[OK]</color>" : "<color=#EF5350>[X]</color>";
                 string answerStr = q.playerAnswer == -999
                     ? "<color=#FFA726>Sin respuesta</color>"
                     : $"Respondió: <color=#FFFFFF>{q.playerAnswer}</color>";
@@ -240,200 +308,5 @@ public class ReportUI : MonoBehaviour
         int mins = Mathf.FloorToInt(seconds / 60f);
         int secs = Mathf.FloorToInt(seconds % 60f);
         return mins > 0 ? $"{mins}m {secs}s" : $"{secs}s";
-    }
-
-    // ═══════════════════════════════════════════
-    //  CONSTRUCCIÓN PROGRAMÁTICA DEL PANEL
-    // ═══════════════════════════════════════════
-
-    private void BuildReportPanel()
-    {
-        if (parentCanvas == null)
-        {
-            Debug.LogError("[ReportUI] No se encontró Canvas padre.");
-            return;
-        }
-
-        // ─── Panel principal (fondo oscuro semitransparente) ───
-        reportPanel = new GameObject("ReportPanel");
-        reportPanel.transform.SetParent(parentCanvas.transform, false);
-
-        RectTransform panelRT = reportPanel.AddComponent<RectTransform>();
-        panelRT.anchorMin = Vector2.zero;
-        panelRT.anchorMax = Vector2.one;
-        panelRT.offsetMin = Vector2.zero;
-        panelRT.offsetMax = Vector2.zero;
-
-        Image panelBg = reportPanel.AddComponent<Image>();
-        panelBg.color = new Color(0.05f, 0.05f, 0.12f, 0.97f);
-
-        // ─── Contenedor interior con margen ───
-        GameObject innerContainer = new GameObject("InnerContainer");
-        innerContainer.transform.SetParent(reportPanel.transform, false);
-
-        RectTransform innerRT = innerContainer.AddComponent<RectTransform>();
-        innerRT.anchorMin = new Vector2(0.05f, 0.05f);
-        innerRT.anchorMax = new Vector2(0.95f, 0.95f);
-        innerRT.offsetMin = Vector2.zero;
-        innerRT.offsetMax = Vector2.zero;
-
-        // ─── Título ───
-        GameObject titleObj = new GameObject("Title");
-        titleObj.transform.SetParent(innerContainer.transform, false);
-
-        RectTransform titleRT = titleObj.AddComponent<RectTransform>();
-        titleRT.anchorMin = new Vector2(0f, 0.92f);
-        titleRT.anchorMax = new Vector2(1f, 1f);
-        titleRT.offsetMin = Vector2.zero;
-        titleRT.offsetMax = Vector2.zero;
-
-        TextMeshProUGUI titleText = titleObj.AddComponent<TextMeshProUGUI>();
-        titleText.text = "📊 Reporte del Alumno";
-        titleText.fontSize = 32;
-        titleText.color = new Color(1f, 0.84f, 0f); // Gold
-        titleText.alignment = TextAlignmentOptions.Center;
-        titleText.fontStyle = FontStyles.Bold;
-
-        // ─── Botón cerrar ───
-        GameObject closeObj = new GameObject("CloseButton");
-        closeObj.transform.SetParent(innerContainer.transform, false);
-
-        RectTransform closeRT = closeObj.AddComponent<RectTransform>();
-        closeRT.anchorMin = new Vector2(0.85f, 0.92f);
-        closeRT.anchorMax = new Vector2(1f, 1f);
-        closeRT.offsetMin = Vector2.zero;
-        closeRT.offsetMax = Vector2.zero;
-
-        Image closeBg = closeObj.AddComponent<Image>();
-        closeBg.color = new Color(0.9f, 0.3f, 0.3f, 1f);
-
-        closeButton = closeObj.AddComponent<Button>();
-        closeButton.targetGraphic = closeBg;
-        closeButton.onClick.AddListener(HideReport);
-
-        // Texto del botón cerrar
-        GameObject closeTextObj = new GameObject("CloseText");
-        closeTextObj.transform.SetParent(closeObj.transform, false);
-
-        RectTransform closeTextRT = closeTextObj.AddComponent<RectTransform>();
-        closeTextRT.anchorMin = Vector2.zero;
-        closeTextRT.anchorMax = Vector2.one;
-        closeTextRT.offsetMin = Vector2.zero;
-        closeTextRT.offsetMax = Vector2.zero;
-
-        TextMeshProUGUI closeText = closeTextObj.AddComponent<TextMeshProUGUI>();
-        closeText.text = "✕ Cerrar";
-        closeText.fontSize = 20;
-        closeText.color = Color.white;
-        closeText.alignment = TextAlignmentOptions.Center;
-
-        // ─── Scroll View ───
-        GameObject scrollObj = new GameObject("ScrollView");
-        scrollObj.transform.SetParent(innerContainer.transform, false);
-
-        RectTransform scrollRT = scrollObj.AddComponent<RectTransform>();
-        scrollRT.anchorMin = new Vector2(0f, 0f);
-        scrollRT.anchorMax = new Vector2(1f, 0.90f);
-        scrollRT.offsetMin = Vector2.zero;
-        scrollRT.offsetMax = Vector2.zero;
-
-        scrollRect = scrollObj.AddComponent<ScrollRect>();
-        scrollRect.horizontal = false;
-        scrollRect.vertical = true;
-        scrollRect.movementType = ScrollRect.MovementType.Clamped;
-        scrollRect.scrollSensitivity = 30f;
-
-        // Máscara
-        Image scrollBg = scrollObj.AddComponent<Image>();
-        scrollBg.color = new Color(0.08f, 0.08f, 0.15f, 1f);
-        Mask mask = scrollObj.AddComponent<Mask>();
-        mask.showMaskGraphic = true;
-
-        // Viewport
-        GameObject viewportObj = new GameObject("Viewport");
-        viewportObj.transform.SetParent(scrollObj.transform, false);
-
-        RectTransform viewportRT = viewportObj.AddComponent<RectTransform>();
-        viewportRT.anchorMin = Vector2.zero;
-        viewportRT.anchorMax = Vector2.one;
-        viewportRT.offsetMin = new Vector2(10f, 10f);
-        viewportRT.offsetMax = new Vector2(-10f, -10f);
-
-        // Content (el texto scrolleable)
-        GameObject contentObj = new GameObject("Content");
-        contentObj.transform.SetParent(viewportObj.transform, false);
-
-        RectTransform contentRT = contentObj.AddComponent<RectTransform>();
-        contentRT.anchorMin = new Vector2(0f, 1f);
-        contentRT.anchorMax = new Vector2(1f, 1f);
-        contentRT.pivot = new Vector2(0.5f, 1f);
-        contentRT.offsetMin = Vector2.zero;
-        contentRT.offsetMax = Vector2.zero;
-
-        ContentSizeFitter fitter = contentObj.AddComponent<ContentSizeFitter>();
-        fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-        reportContent = contentObj.AddComponent<TextMeshProUGUI>();
-        reportContent.fontSize = 16;
-        reportContent.color = new Color(0.85f, 0.85f, 0.9f);
-        reportContent.alignment = TextAlignmentOptions.TopLeft;
-        reportContent.enableWordWrapping = true;
-        reportContent.richText = true;
-        reportContent.overflowMode = TextOverflowModes.Overflow;
-        reportContent.lineSpacing = 5f;
-
-        // Configurar scroll rect
-        scrollRect.content = contentRT;
-        scrollRect.viewport = viewportRT;
-
-        // ─── Scrollbar vertical ───
-        GameObject scrollbarObj = new GameObject("Scrollbar");
-        scrollbarObj.transform.SetParent(scrollObj.transform, false);
-
-        RectTransform scrollbarRT = scrollbarObj.AddComponent<RectTransform>();
-        scrollbarRT.anchorMin = new Vector2(1f, 0f);
-        scrollbarRT.anchorMax = new Vector2(1f, 1f);
-        scrollbarRT.pivot = new Vector2(1f, 0.5f);
-        scrollbarRT.sizeDelta = new Vector2(12f, 0f);
-        scrollbarRT.offsetMin = new Vector2(-12f, 0f);
-        scrollbarRT.offsetMax = new Vector2(0f, 0f);
-
-        Image scrollbarBg = scrollbarObj.AddComponent<Image>();
-        scrollbarBg.color = new Color(0.15f, 0.15f, 0.2f, 1f);
-
-        Scrollbar scrollbar = scrollbarObj.AddComponent<Scrollbar>();
-        scrollbar.direction = Scrollbar.Direction.BottomToTop;
-
-        // Handle del scrollbar
-        GameObject handleArea = new GameObject("HandleArea");
-        handleArea.transform.SetParent(scrollbarObj.transform, false);
-
-        RectTransform handleAreaRT = handleArea.AddComponent<RectTransform>();
-        handleAreaRT.anchorMin = Vector2.zero;
-        handleAreaRT.anchorMax = Vector2.one;
-        handleAreaRT.offsetMin = Vector2.zero;
-        handleAreaRT.offsetMax = Vector2.zero;
-
-        GameObject handleObj = new GameObject("Handle");
-        handleObj.transform.SetParent(handleArea.transform, false);
-
-        RectTransform handleRT = handleObj.AddComponent<RectTransform>();
-        handleRT.anchorMin = Vector2.zero;
-        handleRT.anchorMax = Vector2.one;
-        handleRT.offsetMin = Vector2.zero;
-        handleRT.offsetMax = Vector2.zero;
-
-        Image handleImg = handleObj.AddComponent<Image>();
-        handleImg.color = new Color(0.4f, 0.4f, 0.6f, 1f);
-
-        scrollbar.handleRect = handleRT;
-        scrollbar.targetGraphic = handleImg;
-        scrollRect.verticalScrollbar = scrollbar;
-        scrollRect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
-
-        reportPanel.SetActive(false);
-        isBuilt = true;
-
-        Debug.Log("[ReportUI] Panel de reporte construido exitosamente.");
     }
 }

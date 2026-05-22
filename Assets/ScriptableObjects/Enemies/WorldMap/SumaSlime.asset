@@ -15,16 +15,16 @@ MonoBehaviour:
   enemyName: Slime de Suma
   sprite: {fileID: 21300000, guid: b7a9b30e19b516f4e8f485ca2d26cbbd, type: 3}
   animatorController: {fileID: 9100000, guid: 997a405e5a64b5c4087d6af2e89a9d60, type: 2}
-  maxHP: 65
-  attackDamage: 8
+  maxHP: 120
+  attackDamage: 10
   defense: 2
   useAddition: 1
   useSubtraction: 0
   useMultiplication: 0
   useDivision: 0
   minNumber: 1
-  maxNumber: 10
-  questionTimeLimit: 18
+  maxNumber: 20
+  questionTimeLimit: 10
   damageMultiplier: 1
   criticalChance: 0
   criticalBonusDamage: 10

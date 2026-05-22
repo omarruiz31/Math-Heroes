@@ -31,6 +31,20 @@ public class BattleUI : MonoBehaviour
     public Button returnButton;
     public Button exitButton;
 
+    [Header("Resultado final (Modal Estático)")]
+    public Image modalBorderImage;
+    public Image titleBarImage;
+    public TextMeshProUGUI resultTitleText;
+    public TextMeshProUGUI resultSubtitleText;
+    public TextMeshProUGUI correctCountText;
+    public TextMeshProUGUI incorrectCountText;
+    public TextMeshProUGUI accuracyText;
+    public Image accuracyBarFill;
+    public TextMeshProUGUI timeText;
+    public TextMeshProUGUI xpGainedText;
+    public TextMeshProUGUI levelText;
+    public Button retryButton;
+
     [Header("Animaciones")]
     public Animator enemyAnimator;
     public Animator playerAnimator;
@@ -158,14 +172,128 @@ public class BattleUI : MonoBehaviour
     public void ShowResult(bool playerWon)
     {
         resultPanel.SetActive(true);
-        resultText.text = playerWon ? "¡Victoria! " : "Derrota... :(";
-        returnButton.onClick.RemoveAllListeners();
-        returnButton.onClick.AddListener(ReturnToMap);
+
+        var gm = GameManager.Instance;
+        float battleTime = Time.time - gm.battleStartTime;
+        int totalQuestions = gm.battleCorrectAnswers + gm.battleWrongAnswers;
+        float accuracy = totalQuestions > 0
+            ? (gm.battleCorrectAnswers / (float)totalQuestions) * 100f
+            : 0f;
+        int xpGained = playerWon ? 20 + (gm.battleCorrectAnswers * 5) : 0;
+
+        // Cambiar colores del Modal y TitleBar
+        if (modalBorderImage != null)
+        {
+            modalBorderImage.color = playerWon
+                ? new Color(0.3f, 0.75f, 0.45f, 1f)
+                : new Color(0.85f, 0.3f, 0.3f, 1f);
+        }
+        if (titleBarImage != null)
+        {
+            titleBarImage.color = playerWon
+                ? new Color(0.15f, 0.5f, 0.3f, 1f)
+                : new Color(0.6f, 0.15f, 0.15f, 1f);
+        }
+
+        // Título y Subtítulo
+        if (resultTitleText != null)
+        {
+            resultTitleText.text = playerWon ? "VICTORIA!" : "DERROTA";
+        }
+        if (resultSubtitleText != null)
+        {
+            string enemyName = gm.currentEnemy != null ? gm.currentEnemy.enemyName : "Enemigo";
+            resultSubtitleText.text = $"vs  {enemyName}";
+        }
+
+        // Estadísticas
+        if (correctCountText != null)
+        {
+            correctCountText.text = gm.battleCorrectAnswers.ToString();
+        }
+        if (incorrectCountText != null)
+        {
+            incorrectCountText.text = gm.battleWrongAnswers.ToString();
+        }
+        if (accuracyText != null)
+        {
+            accuracyText.text = $"{accuracy:F0}%";
+            accuracyText.color = GetAccuracyColorRGB(accuracy);
+        }
+        if (accuracyBarFill != null)
+        {
+            accuracyBarFill.color = GetAccuracyColorRGB(accuracy);
+            RectTransform fillRT = accuracyBarFill.rectTransform;
+            if (fillRT != null)
+            {
+                fillRT.anchorMax = new Vector2(Mathf.Clamp01(accuracy / 100f), 1f);
+            }
+        }
+
+        int mins = Mathf.FloorToInt(battleTime / 60f);
+        int secs = Mathf.FloorToInt(battleTime % 60f);
+        string timeStr = mins > 0 ? $"{mins}m {secs}s" : $"{secs}s";
+        if (timeText != null)
+        {
+            timeText.text = timeStr;
+        }
+
+        // Info extra (XP y Nivel o Motivación)
+        if (playerWon)
+        {
+            if (xpGainedText != null)
+            {
+                xpGainedText.text = $"+{xpGained} XP";
+                xpGainedText.color = new Color(1f, 0.84f, 0f);
+            }
+            if (levelText != null)
+            {
+                levelText.text = gm.playerData != null ? $"Nivel actual: {gm.playerData.level}" : "";
+                levelText.color = new Color(0.7f, 0.7f, 0.8f);
+            }
+        }
+        else
+        {
+            if (xpGainedText != null)
+            {
+                xpGainedText.text = "No te rindas, ¡inténtalo de nuevo!";
+                xpGainedText.color = new Color(1f, 0.65f, 0.15f);
+            }
+            if (levelText != null)
+            {
+                levelText.text = "";
+            }
+        }
+
+        // Botones
+        if (returnButton != null)
+        {
+            returnButton.onClick.RemoveAllListeners();
+            returnButton.onClick.AddListener(() => ReturnToMap());
+        }
+        if (retryButton != null)
+        {
+            retryButton.onClick.RemoveAllListeners();
+            retryButton.onClick.AddListener(() => RetryBattle());
+        }
+    }
+
+    private Color GetAccuracyColorRGB(float accuracy)
+    {
+        if (accuracy >= 80f) return new Color(0.4f, 0.73f, 0.42f);
+        if (accuracy >= 60f) return new Color(1f, 0.65f, 0.15f);
+        return new Color(0.94f, 0.33f, 0.31f);
     }
 
     private void ReturnToMap()
     {
         StopTimer();
         GameManager.Instance.ReturnToMap();
+    }
+
+    private void RetryBattle()
+    {
+        StopTimer();
+        GameManager.Instance.RetryBattle();
     }
 }
