@@ -48,7 +48,7 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator NextTurn()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
 
         currentQuestion = questionGenerator.GenerateQuestion(enemyData);
         ui.ShowQuestion(currentQuestion.text, enemyData.questionTimeLimit);
@@ -129,16 +129,17 @@ public class BattleManager : MonoBehaviour
         {
             ui.ShowFeedback(true, currentQuestion.correctAnswer,
                 "¡Respuesta correcta, pero el enemigo esquivó tu ataque!");
+            ui.TriggerPlayerAttack(ui.enemyRenderer.transform.position, false);
         }
         else
         {
             int damage = Random.Range(18, 30); // puedes conectar esto a stats del jugador
             enemyCurrentHP = Mathf.Max(0, enemyCurrentHP - damage);
             ui.UpdateEnemyHP(enemyCurrentHP, enemyData.maxHP);
-            ui.PlayEnemyHitAnim();
+            ui.TriggerPlayerAttack(ui.enemyRenderer.transform.position, true);
         }
 
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(0.7f);
 
         if (enemyCurrentHP <= 0) { EndBattle(true); yield break; }
         StartCoroutine(NextTurn());
@@ -146,7 +147,7 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator EnemyAttackTurn()
     {
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.4f);
 
         int damage = enemyAI.CalculateDamage(enemyData);
         GameManager.Instance.playerCurrentHP =
@@ -154,9 +155,9 @@ public class BattleManager : MonoBehaviour
 
         ui.UpdatePlayerHP(GameManager.Instance.playerCurrentHP,
                           GameManager.Instance.playerMaxHP);
-        ui.PlayPlayerHitAnim();
+        ui.TriggerEnemyAttack(true);
 
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(0.8f);
 
         if (GameManager.Instance.playerCurrentHP <= 0) { EndBattle(false); yield break; }
         StartCoroutine(NextTurn());

@@ -41,15 +41,16 @@ public class WorldMapPlayerController : MonoBehaviour
     {
         moveInput = ReadMoveInput();
 
-        if (Mathf.Abs(moveInput.x) > 0.01f)
-        {
-            float facing = moveInput.x < 0f ? -1f : 1f;
-            transform.localScale = new Vector3(Mathf.Abs(baseScale.x) * facing, baseScale.y, baseScale.z);
-        }
-
         // Actualizar animación
         if (animator != null)
+        {
             animator.SetFloat("Speed", moveInput.sqrMagnitude);
+            if (moveInput.sqrMagnitude > 0.01f)
+            {
+                animator.SetFloat("Horizontal", moveInput.x);
+                animator.SetFloat("Vertical", moveInput.y);
+            }
+        }
     }
 
     private void FixedUpdate()

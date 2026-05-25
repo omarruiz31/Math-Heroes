@@ -53,6 +53,11 @@ public class BattleUI : MonoBehaviour
     public AudioSource sfxSource;
     public AudioClip playerHitSound;
     public AudioClip enemyHitSound;
+    public AudioClip correctAnswerSound;
+
+    [Header("Efectos Visuales")]
+    public Sprite projectileSprite;
+    public Sprite explosionSprite;
 
     private Coroutine timerCoroutine;
 
@@ -96,6 +101,14 @@ public class BattleUI : MonoBehaviour
         {
             exitButton.onClick.RemoveAllListeners();
             exitButton.onClick.AddListener(ReturnToMap);
+        }
+
+        // Configurar animación idle del jugador mirando hacia la derecha (Horizontal = 1)
+        if (playerAnimator != null && playerAnimator.isActiveAndEnabled)
+        {
+            playerAnimator.SetFloat("Horizontal", 1f);
+            playerAnimator.SetFloat("Vertical", 0f);
+            playerAnimator.SetFloat("Speed", 0f);
         }
     }
 
@@ -143,6 +156,12 @@ public class BattleUI : MonoBehaviour
         correctAnswerText.text = correct
             ? explanation
             : $"La respuesta era: {correctAnswer}\n{explanation}";
+
+        if (correct)
+        {
+            if (sfxSource && correctAnswerSound)
+                sfxSource.PlayOneShot(correctAnswerSound);
+        }
     }
 
     public void UpdateEnemyHP(int current, int max)
@@ -161,12 +180,38 @@ public class BattleUI : MonoBehaviour
     {
         if (enemyAnimator) enemyAnimator.SetTrigger("Hit");
         if (sfxSource && enemyHitSound) sfxSource.PlayOneShot(enemyHitSound);
+        StartCoroutine(FlashRedEnemy());
+    }
+
+    private IEnumerator FlashRedEnemy()
+    {
+        if (enemyRenderer != null)
+        {
+            enemyRenderer.color = Color.red;
+            yield return new WaitForSeconds(0.2f);
+            enemyRenderer.color = Color.white;
+        }
     }
 
     public void PlayPlayerHitAnim()
     {
         if (playerAnimator) playerAnimator.SetTrigger("Hit");
         if (sfxSource && playerHitSound) sfxSource.PlayOneShot(playerHitSound);
+        StartCoroutine(FlashRedPlayer());
+    }
+
+    private IEnumerator FlashRedPlayer()
+    {
+        if (playerAnimator != null)
+        {
+            Image playerImage = playerAnimator.GetComponent<Image>();
+            if (playerImage != null)
+            {
+                playerImage.color = Color.red;
+                yield return new WaitForSeconds(0.2f);
+                playerImage.color = Color.white;
+            }
+        }
     }
 
     public void ShowResult(bool playerWon)
@@ -295,5 +340,192 @@ public class BattleUI : MonoBehaviour
     {
         StopTimer();
         GameManager.Instance.RetryBattle();
+    }
+
+    // Método para disparar la animación de ataque (proyectil y explosión)
+    public void TriggerPlayerAttack(Vector3 enemyWorldPos, bool isHit)
+    {
+        if (playerAnimator == null || enemyRenderer == null) return;
+
+        Canvas canvas = GetComponentInChildren<Canvas>();
+        if (canvas == null) canvas = playerAnimator.GetComponentInParent<Canvas>();
+
+        Vector2 startPos = ((RectTransform)playerAnimator.transform).anchoredPosition;
+        // Ajustar punto de salida para que salga aproximadamente desde la mano del personaje (mirando a la derecha)
+        startPos += new Vector2(65f, -10f);
+        Vector2 endPos = Vector2.zero;
+
+        if (canvas != null)
+        {
+            Vector2 screenPos = Camera.main.WorldToScreenPoint(enemyWorldPos);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                (RectTransform)canvas.transform,
+                screenPos,
+                canvas.worldCamera,
+                out endPos
+            );
+        }
+        else
+        {
+            endPos = new Vector2(500f, 0f);
+        }
+
+        StartCoroutine(AnimateProjectile(startPos, endPos, isHit));
+    }
+
+    private IEnumerator AnimateProjectile(Vector2 startPos, Vector2 endPos, bool isHit)
+    {
+        Sprite spriteToUse = projectileSprite;
+        if (spriteToUse == null)
+        {
+#if UNITY_EDITOR
+            spriteToUse = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/SunnyLand Artwork/Sprites/Items/gem/gem-1.png");
+#endif
+        }
+
+        if (spriteToUse == null) yield break;
+
+        GameObject proj = new GameObject("Projectile");
+        proj.transform.SetParent(playerAnimator.transform.parent, false);
+
+        Image img = proj.AddComponent<Image>();
+        img.sprite = spriteToUse;
+        img.preserveAspect = true;
+
+        RectTransform rect = proj.GetComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(120f, 120f);
+        rect.anchoredPosition = startPos;
+
+        float duration = 0.4f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            rect.anchoredPosition = Vector2.Lerp(startPos, endPos, t);
+            rect.Rotate(0f, 0f, 500f * Time.deltaTime);
+            yield return null;
+        }
+
+        Destroy(proj);
+
+        if (isHit)
+        {
+            StartCoroutine(AnimateHitExplosion(endPos));
+            PlayEnemyHitAnim();
+        }
+    }
+
+    private IEnumerator AnimateHitExplosion(Vector2 pos)
+    {
+        GameObject exp = new GameObject("Explosion");
+        exp.transform.SetParent(playerAnimator.transform.parent, false);
+
+        Image img = exp.AddComponent<Image>();
+        Sprite spriteToUse = explosionSprite;
+        if (spriteToUse == null)
+        {
+#if UNITY_EDITOR
+            spriteToUse = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/SunnyLand Artwork/Sprites/Fx/item-feedback/item-feedback-1.png");
+#endif
+        }
+        img.sprite = spriteToUse;
+        img.preserveAspect = true;
+        img.color = new Color(1f, 0.9f, 0.4f, 1f); // Tinte dorado
+
+        RectTransform rect = exp.GetComponent<RectTransform>();
+        rect.anchoredPosition = pos;
+        rect.sizeDelta = new Vector2(30f, 30f);
+
+        float duration = 0.25f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            float scale = Mathf.Lerp(1f, 7f, t);
+            rect.sizeDelta = new Vector2(30f * scale, 30f * scale);
+            img.color = new Color(1f, 0.9f, 0.4f, 1f - t);
+            yield return null;
+        }
+
+        Destroy(exp);
+    }
+
+    // Método para disparar la animación de ataque del enemigo hacia el jugador
+    public void TriggerEnemyAttack(bool isHit)
+    {
+        if (playerAnimator == null || enemyRenderer == null) return;
+
+        Canvas canvas = GetComponentInChildren<Canvas>();
+        if (canvas == null) canvas = playerAnimator.GetComponentInParent<Canvas>();
+
+        Vector2 endPos = ((RectTransform)playerAnimator.transform).anchoredPosition;
+        // Ajustar punto de impacto de la mano del jugador
+        endPos += new Vector2(65f, -10f);
+        Vector2 startPos = Vector2.zero;
+
+        if (canvas != null)
+        {
+            Vector2 screenPos = Camera.main.WorldToScreenPoint(enemyRenderer.transform.position);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                (RectTransform)canvas.transform,
+                screenPos,
+                canvas.worldCamera,
+                out startPos
+            );
+        }
+        else
+        {
+            startPos = new Vector2(500f, 0f);
+        }
+
+        StartCoroutine(AnimateEnemyProjectile(startPos, endPos, isHit));
+    }
+
+    private IEnumerator AnimateEnemyProjectile(Vector2 startPos, Vector2 endPos, bool isHit)
+    {
+        Sprite spriteToUse = projectileSprite;
+        if (spriteToUse == null)
+        {
+#if UNITY_EDITOR
+            spriteToUse = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/SunnyLand Artwork/Sprites/Items/gem/gem-1.png");
+#endif
+        }
+
+        if (spriteToUse == null) yield break;
+
+        GameObject proj = new GameObject("EnemyProjectile");
+        proj.transform.SetParent(playerAnimator.transform.parent, false);
+
+        Image img = proj.AddComponent<Image>();
+        img.sprite = spriteToUse;
+        img.preserveAspect = true;
+
+        RectTransform rect = proj.GetComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(120f, 120f);
+        rect.anchoredPosition = startPos;
+
+        float duration = 0.4f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            rect.anchoredPosition = Vector2.Lerp(startPos, endPos, t);
+            rect.Rotate(0f, 0f, -500f * Time.deltaTime); // Rotar en sentido opuesto
+            yield return null;
+        }
+
+        Destroy(proj);
+
+        if (isHit)
+        {
+            StartCoroutine(AnimateHitExplosion(endPos));
+            PlayPlayerHitAnim();
+        }
     }
 }

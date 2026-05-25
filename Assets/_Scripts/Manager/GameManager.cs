@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     private const string BattleSceneName = "BattleScene";
-    private const string MapSceneName = "WorldMap";
+    private string lastMapSceneName = "WorldMap";
 
     private AudioSource audioSource;
 
@@ -169,6 +169,13 @@ public class GameManager : MonoBehaviour
         battleWrongAnswers = 0;
         battleStartTime = Time.time;
 
+        // Guardar la escena actual antes de entrar a la batalla
+        string currentScene = SceneManager.GetActiveScene().name;
+        if (currentScene != BattleSceneName)
+        {
+            lastMapSceneName = currentScene;
+        }
+
         SceneManager.LoadScene(BattleSceneName);
     }
 
@@ -225,7 +232,7 @@ public class GameManager : MonoBehaviour
         if (playerCurrentHP <= 0)
             HealPlayerToFull();
 
-        SceneManager.LoadScene(MapSceneName);
+        SceneManager.LoadScene(lastMapSceneName);
     }
 
     /// <summary>
