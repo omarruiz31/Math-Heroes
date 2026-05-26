@@ -1,0 +1,38 @@
+{
+    "asset": "bea821bd6f02e46f8b169974387e2b66",
+    "fileName": "019e62c6-64b4-7079-ae7f-7b910daefca4.png",
+    "prompt": "Stone UI button, ancient mossy rock texture, green moss growing on grey stone, high definition pixel art style, game asset, rectangular shape, NO icons, NO arrows, dark pressed state, slightly shadowed and indented, isolated on pure white background, clear pixel edges.",
+    "negativePrompt": "",
+    "model": "gemini-3.1-flash",
+    "modelName": "Gemini 3.1 Nano Banana 2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "81bcc0f3041404d0c9e313c732e2cdbe",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

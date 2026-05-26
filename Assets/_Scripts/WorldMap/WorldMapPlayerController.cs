@@ -7,8 +7,8 @@ using UnityEngine.InputSystem;
 public class WorldMapPlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private Vector2 minBounds = new Vector2(-13.5f, -7f);
-    [SerializeField] private Vector2 maxBounds = new Vector2(13.5f, 7f);
+    [SerializeField] private Vector2 minBounds = new Vector2(-100f, -100f);
+    [SerializeField] private Vector2 maxBounds = new Vector2(100f, 100f);
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -23,6 +23,7 @@ public class WorldMapPlayerController : MonoBehaviour
 
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
+        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
 
         CircleCollider2D playerCollider = GetComponent<CircleCollider2D>();
         if (playerCollider == null)
@@ -40,15 +41,16 @@ public class WorldMapPlayerController : MonoBehaviour
     {
         moveInput = ReadMoveInput();
 
-        if (Mathf.Abs(moveInput.x) > 0.01f)
-        {
-            float facing = moveInput.x < 0f ? -1f : 1f;
-            transform.localScale = new Vector3(Mathf.Abs(baseScale.x) * facing, baseScale.y, baseScale.z);
-        }
-
         // Actualizar animación
         if (animator != null)
+        {
             animator.SetFloat("Speed", moveInput.sqrMagnitude);
+            if (moveInput.sqrMagnitude > 0.01f)
+            {
+                animator.SetFloat("Horizontal", moveInput.x);
+                animator.SetFloat("Vertical", moveInput.y);
+            }
+        }
     }
 
     private void FixedUpdate()
