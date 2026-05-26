@@ -81,7 +81,19 @@ public class WorldMapBattleZone : MonoBehaviour
         }
 
         enteringBattle = true;
-        Invoke(nameof(StartBattle), entryDelay);
+
+        if (BattleEntranceUI.Instance != null)
+        {
+            BattleEntranceUI.Instance.ShowEntrance(zoneName, enemy, () =>
+            {
+                StartBattleDirectly();
+            });
+        }
+        else
+        {
+            // Fallback si no está el modal en la escena
+            Invoke(nameof(StartBattle), entryDelay);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -90,12 +102,21 @@ public class WorldMapBattleZone : MonoBehaviour
 
         enteringBattle = false;
         CancelInvoke(nameof(StartBattle));
+
+        if (BattleEntranceUI.Instance != null)
+        {
+            BattleEntranceUI.Instance.Hide();
+        }
     }
 
     private void StartBattle()
     {
         if (!enteringBattle) return;
+        StartBattleDirectly();
+    }
 
+    private void StartBattleDirectly()
+    {
         if (GameManager.Instance == null)
         {
             Debug.LogError($"No hay GameManager para entrar a {zoneName}.");

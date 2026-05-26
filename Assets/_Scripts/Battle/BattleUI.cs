@@ -161,7 +161,7 @@ public class BattleUI : MonoBehaviour
 
     public void ShowFeedback(bool correct, int correctAnswer, string explanation)
     {
-        feedbackText.text  = correct ? "¡Correcto! ✓" : "¡Incorrecto! ✗";
+        feedbackText.text  = correct ? "¡Correcto!" : "¡Incorrecto!";
         feedbackText.color = correct ? Color.green : Color.red;
         correctAnswerText.text = correct
             ? explanation

@@ -12,10 +12,21 @@ public class UIButtonEffects : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private Vector3 targetScale;
     private bool isHovered = false;
 
-    private void Start()
+    private void Awake()
     {
         originalScale = transform.localScale;
+        if (originalScale == Vector3.zero) originalScale = Vector3.one;
         targetScale = originalScale;
+    }
+
+    private void Start()
+    {
+        // Fallback en caso de que cambie la escala antes de Awake
+        if (originalScale == Vector3.one && transform.localScale != Vector3.one)
+        {
+            originalScale = transform.localScale;
+            targetScale = originalScale;
+        }
     }
 
     private void Update()
@@ -54,8 +65,11 @@ public class UIButtonEffects : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     private void OnDisable()
     {
-        transform.localScale = originalScale;
-        targetScale = originalScale;
+        if (originalScale != Vector3.zero)
+        {
+            transform.localScale = originalScale;
+            targetScale = originalScale;
+        }
         isHovered = false;
     }
 }
