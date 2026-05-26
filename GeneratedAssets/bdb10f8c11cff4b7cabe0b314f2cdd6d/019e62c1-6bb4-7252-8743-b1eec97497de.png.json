@@ -1,0 +1,28 @@
+{
+    "asset": "bdb10f8c11cff4b7cabe0b314f2cdd6d",
+    "fileName": "019e62c1-6bb4-7252-8743-b1eec97497de.png",
+    "prompt": "Stone UI button, weathered grey rock texture, high definition pixel art style, game asset, rectangular shape, isolated on flat white background, clear pixel edges, detailed stone cracks and shading.",
+    "negativePrompt": "",
+    "model": "gemini-3.1-flash",
+    "modelName": "Gemini 3.1 Nano Banana 2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

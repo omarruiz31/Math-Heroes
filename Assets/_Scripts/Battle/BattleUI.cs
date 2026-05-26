@@ -59,6 +59,16 @@ public class BattleUI : MonoBehaviour
     public Sprite projectileSprite;
     public Sprite explosionSprite;
 
+    [Header("Ajustes de Proyectiles")]
+    [Tooltip("Opcional: Punto en la UI desde donde sale el proyectil del jugador y llega el del enemigo.")]
+    public RectTransform playerProjectilePoint;
+    [Tooltip("Opcional: Punto en la escena desde donde sale el proyectil del enemigo y llega el del jugador.")]
+    public Transform enemyProjectilePoint;
+    [Tooltip("Offset manual para el punto del jugador si no se especifica 'playerProjectilePoint'.")]
+    public Vector2 playerProjectileOffset = new Vector2(65f, -10f);
+    [Tooltip("Offset manual para el punto del enemigo si no se especifica 'enemyProjectilePoint'.")]
+    public Vector2 enemyProjectileOffset = Vector2.zero;
+
     private Coroutine timerCoroutine;
 
     public void Setup(EnemyData enemy, int playerMaxHP, int playerHP)
@@ -350,24 +360,61 @@ public class BattleUI : MonoBehaviour
         Canvas canvas = GetComponentInChildren<Canvas>();
         if (canvas == null) canvas = playerAnimator.GetComponentInParent<Canvas>();
 
-        Vector2 startPos = ((RectTransform)playerAnimator.transform).anchoredPosition;
-        // Ajustar punto de salida para que salga aproximadamente desde la mano del personaje (mirando a la derecha)
-        startPos += new Vector2(65f, -10f);
+        Vector2 startPos = Vector2.zero;
         Vector2 endPos = Vector2.zero;
 
         if (canvas != null)
         {
-            Vector2 screenPos = Camera.main.WorldToScreenPoint(enemyWorldPos);
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                (RectTransform)canvas.transform,
-                screenPos,
-                canvas.worldCamera,
-                out endPos
-            );
+            Camera cam = (canvas.renderMode == RenderMode.ScreenSpaceOverlay) ? null : canvas.worldCamera;
+
+            if (playerProjectilePoint != null)
+            {
+                Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(cam, playerProjectilePoint.position);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    (RectTransform)canvas.transform,
+                    screenPos,
+                    cam,
+                    out startPos
+                );
+            }
+            else
+            {
+                Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(cam, playerAnimator.transform.position);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    (RectTransform)canvas.transform,
+                    screenPos,
+                    cam,
+                    out startPos
+                );
+                startPos += playerProjectileOffset;
+            }
+
+            if (enemyProjectilePoint != null)
+            {
+                Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(cam, enemyProjectilePoint.position);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    (RectTransform)canvas.transform,
+                    screenPos,
+                    cam,
+                    out endPos
+                );
+            }
+            else
+            {
+                Vector2 screenPos = Camera.main.WorldToScreenPoint(enemyWorldPos);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    (RectTransform)canvas.transform,
+                    screenPos,
+                    cam,
+                    out endPos
+                );
+                endPos += enemyProjectileOffset;
+            }
         }
         else
         {
-            endPos = new Vector2(500f, 0f);
+            startPos = playerProjectileOffset;
+            endPos = new Vector2(500f, 0f) + enemyProjectileOffset;
         }
 
         StartCoroutine(AnimateProjectile(startPos, endPos, isHit));
@@ -462,24 +509,61 @@ public class BattleUI : MonoBehaviour
         Canvas canvas = GetComponentInChildren<Canvas>();
         if (canvas == null) canvas = playerAnimator.GetComponentInParent<Canvas>();
 
-        Vector2 endPos = ((RectTransform)playerAnimator.transform).anchoredPosition;
-        // Ajustar punto de impacto de la mano del jugador
-        endPos += new Vector2(65f, -10f);
         Vector2 startPos = Vector2.zero;
+        Vector2 endPos = Vector2.zero;
 
         if (canvas != null)
         {
-            Vector2 screenPos = Camera.main.WorldToScreenPoint(enemyRenderer.transform.position);
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                (RectTransform)canvas.transform,
-                screenPos,
-                canvas.worldCamera,
-                out startPos
-            );
+            Camera cam = (canvas.renderMode == RenderMode.ScreenSpaceOverlay) ? null : canvas.worldCamera;
+
+            if (enemyProjectilePoint != null)
+            {
+                Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(cam, enemyProjectilePoint.position);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    (RectTransform)canvas.transform,
+                    screenPos,
+                    cam,
+                    out startPos
+                );
+            }
+            else
+            {
+                Vector2 screenPos = Camera.main.WorldToScreenPoint(enemyRenderer.transform.position);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    (RectTransform)canvas.transform,
+                    screenPos,
+                    cam,
+                    out startPos
+                );
+                startPos += enemyProjectileOffset;
+            }
+
+            if (playerProjectilePoint != null)
+            {
+                Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(cam, playerProjectilePoint.position);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    (RectTransform)canvas.transform,
+                    screenPos,
+                    cam,
+                    out endPos
+                );
+            }
+            else
+            {
+                Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(cam, playerAnimator.transform.position);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    (RectTransform)canvas.transform,
+                    screenPos,
+                    cam,
+                    out endPos
+                );
+                endPos += playerProjectileOffset;
+            }
         }
         else
         {
-            startPos = new Vector2(500f, 0f);
+            startPos = new Vector2(500f, 0f) + enemyProjectileOffset;
+            endPos = playerProjectileOffset;
         }
 
         StartCoroutine(AnimateEnemyProjectile(startPos, endPos, isHit));
