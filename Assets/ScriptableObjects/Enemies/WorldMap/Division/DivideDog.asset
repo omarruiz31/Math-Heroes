@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 696d415ba7d624c57aeb6950b77165e2, type: 3}
+  m_Name: DivideDog
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  enemyName: Buitre Divisor
+  sprite: {fileID: 21300000, guid: 579316ff770f2e343a2e29fd5cd57446, type: 3}
+  animatorController: {fileID: 9100000, guid: 67c716b1f11d3dc489685ec26ea36bd9, type: 2}
+  maxHP: 150
+  attackDamage: 20
+  defense: 8
+  useAddition: 0
+  useSubtraction: 0
+  useMultiplication: 0
+  useDivision: 1
+  minNumber: 2
+  maxNumber: 12
+  questionTimeLimit: 12
+  damageMultiplier: 1
+  criticalChance: 0
+  criticalBonusDamage: 10
+  dodgeChance: 0

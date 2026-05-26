@@ -1593,7 +1593,7 @@ PrefabInstance:
         type: 3}
       propertyPath: enemy
       value: 
-      objectReference: {fileID: 11400000, guid: f80d80eb99104bde80fab41e3b6eaaf6,
+      objectReference: {fileID: 11400000, guid: 7294771c209b6435cba23f02974dada7,
         type: 2}
     - target: {fileID: 7865492114668445486, guid: 2dd700bc1557946dcb88aec3660c0fd5,
         type: 3}
@@ -5285,6 +5285,7 @@ MonoBehaviour:
   portraitImage: {fileID: 1978509394}
   typingSpeed: 0.02
   interactPrompt: {fileID: 1923429999}
+  interactPromptText: {fileID: 0}
 --- !u!4 &1959158046
 Transform:
   m_ObjectHideFlags: 0

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 696d415ba7d624c57aeb6950b77165e2, type: 3}
+  m_Name: RestaDino
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  enemyName: Dino de Resta
+  sprite: {fileID: 21300000, guid: 671a594cd6415e04ba0bf26a8eae3621, type: 3}
+  animatorController: {fileID: 9100000, guid: 29d8cec4114872048b2ed9dbc5262e90, type: 2}
+  maxHP: 90
+  attackDamage: 12
+  defense: 4
+  useAddition: 0
+  useSubtraction: 1
+  useMultiplication: 0
+  useDivision: 0
+  minNumber: 5
+  maxNumber: 24
+  questionTimeLimit: 12
+  damageMultiplier: 1
+  criticalChance: 0.08
+  criticalBonusDamage: 10
+  dodgeChance: 0
