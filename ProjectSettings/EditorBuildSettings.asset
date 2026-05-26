@@ -23,4 +23,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/FrenzyBattle.unity
     guid: 9816ad2a90dc8437ab979a977e167c48
+  - enabled: 1
+    path: Assets/Scenes/CiudadMultiplicacion.unity
+    guid: 2beea491eb6a1e844aef20677b03667f
+  - enabled: 1
+    path: Assets/Scenes/CiudadDivision.unity
+    guid: 6e07069adddd1f54bad7e314ba8aeaf7
   m_configObjects: {}

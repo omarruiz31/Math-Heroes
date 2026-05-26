@@ -4024,7 +4024,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d0b987bd11794edbbc9f44e960ba8f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScenePortal
-  sceneToLoad: Multiplicacion
+  sceneToLoad: CiudadMultiplicacion
   requireButtonPress: 1
 --- !u!114 &160731071
 MonoBehaviour:
@@ -4038,7 +4038,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37210462470a54a1190af112818dde1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PortalLabel
-  displayName: VillaMultiplicacion
+  displayName: CiudadMultiplicacion
   fontSize: 4
   unlockedColor: {r: 0.8396226, g: 0.07524917, b: 0.16555269, a: 1}
   lockedColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
@@ -4258,15 +4258,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.8, g: 0.7, b: 0.5, a: 1}
+  m_Material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -751555467536641476, guid: 8001263af76bd4141bd23ab1df7e2feb,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18476,7 +18477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37210462470a54a1190af112818dde1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PortalLabel
-  displayName: VillaDivision
+  displayName: CiudadDivision
   fontSize: 4
   unlockedColor: {r: 1, g: 0.92, b: 0.6, a: 1}
   lockedColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
@@ -18499,7 +18500,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d0b987bd11794edbbc9f44e960ba8f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScenePortal
-  sceneToLoad: VillaSuma
+  sceneToLoad: CiudadDivision
   requireButtonPress: 1
 --- !u!1 &721313509
 GameObject:
@@ -18535,8 +18536,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 20, y: 0}
-  m_SizeDelta: {x: 200, y: 200}
+  m_AnchoredPosition: {x: 117, y: 8}
+  m_SizeDelta: {x: 134.1646, y: 135.77}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &721313511
 CanvasRenderer:
@@ -20724,7 +20725,7 @@ MonoBehaviour:
   dialogue:
     lines:
     - characterName: Yoggi
-      sentence: Holaa bro
+      sentence: 'Holaa '
       characterPortrait: {fileID: 21300000, guid: 62a8e02b0cf94d741b642d21434d981e,
         type: 3}
     - characterName: Yoggi
@@ -33324,8 +33325,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 115, y: 0}
-  m_SizeDelta: {x: -270, y: -40}
+  m_AnchoredPosition: {x: 67.630615, y: 0.000022888184}
+  m_SizeDelta: {x: -387.2192, y: -114.23}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1329749736
 CanvasRenderer:
@@ -40399,15 +40400,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.9, g: 0.8, b: 0.6, a: 1}
+  m_Material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -751555467536641476, guid: 8001263af76bd4141bd23ab1df7e2feb,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
