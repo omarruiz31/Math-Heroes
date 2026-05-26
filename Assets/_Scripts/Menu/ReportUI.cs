@@ -17,6 +17,8 @@ public class ReportUI : MonoBehaviour
     [SerializeField] private Button closeButton;
     [SerializeField] private TMP_Dropdown profileDropdown;
 
+    [SerializeField] private Button deleteProfileButton;
+
     private void Awake()
     {
         if (closeButton != null)
@@ -30,6 +32,39 @@ public class ReportUI : MonoBehaviour
             profileDropdown.onValueChanged.RemoveAllListeners();
             profileDropdown.onValueChanged.AddListener(OnProfileChanged);
         }
+
+        if (deleteProfileButton != null)
+        {
+            deleteProfileButton.onClick.RemoveAllListeners();
+            deleteProfileButton.onClick.AddListener(DeleteCurrentProfile);
+        }
+    }
+
+    /// <summary>
+    /// Elimina el perfil seleccionado actualmente en el dropdown.
+    /// </summary>
+    public void DeleteCurrentProfile()
+    {
+        if (profileDropdown == null || profileDropdown.options.Count == 0) return;
+
+        string profileName = profileDropdown.options[profileDropdown.value].text;
+        
+        // Confirmación simple (opcional, pero recomendada)
+        // Aquí lo borramos directamente como se pidió limpiar el ejecutable
+        SaveSystem.DeleteProfile(profileName);
+        
+        // Si el perfil borrado era el activo en el GameManager, resetearlo
+        if (GameManager.Instance != null && GameManager.Instance.playerData != null && 
+            GameManager.Instance.playerData.playerName == profileName)
+        {
+            GameManager.Instance.playerData = new PlayerData();
+            PlayerPrefs.DeleteKey("CurrentPlayer");
+        }
+
+        // Refrescar la lista
+        ShowReport();
+        
+        Debug.Log($"Perfil '{profileName}' eliminado desde el reporte.");
     }
 
     /// <summary>

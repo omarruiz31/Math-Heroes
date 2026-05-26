@@ -185,8 +185,12 @@ public List<EnemyData> enemyPool;
         }
     }
 
+    private bool sessionRecorded = false;
+
     void EndFrenzy()
     {
+        if (sessionRecorded) return;
+
         // Guardar estadísticas del modo frenesí
         if (GameManager.Instance != null && GameManager.Instance.playerData != null)
         {
@@ -194,8 +198,23 @@ public List<EnemyData> enemyPool;
             SaveSystem.Save(GameManager.Instance.playerData);
         }
 
-        // Record the session?
-        GameManager.Instance.OnBattleLost(enemyData.enemyName); // Reusing logic for now
+        sessionRecorded = true;
+
+        // Record the session as a lost battle for the history (so it shows up in general history too)
+        GameManager.Instance.OnBattleLost("Frenzy Mode"); 
         ui.ShowResult(false);
+    }
+
+    public void ManualExit()
+    {
+        // Guardar antes de salir si no se ha guardado ya (por ejemplo al morir)
+        if (!sessionRecorded && GameManager.Instance != null && GameManager.Instance.playerData != null)
+        {
+            GameManager.Instance.playerData.RecordFrenzySession(enemiesDefeated);
+            SaveSystem.Save(GameManager.Instance.playerData);
+            sessionRecorded = true;
+        }
+        
+        UnityEngine.SceneManagement.SceneManager.LoadScene("menu");
     }
 }
