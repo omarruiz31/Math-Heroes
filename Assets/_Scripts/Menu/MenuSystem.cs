@@ -23,8 +23,11 @@ public class MenuSystem : MonoBehaviour
     [Tooltip("Botón para abrir el reporte — si está vacío, se creará automáticamente en el panel de opciones")]
     public Button reportButton;
 
+    [Header("Game Mode Selection")]
+    public GameObject gameModeModal;
+
     private void Start()
-    {
+{
         // Find music source if not assigned
         if (backgroundMusic == null)
         {
@@ -147,7 +150,32 @@ public class MenuSystem : MonoBehaviour
             }
         }
 
+        // Show mode selection modal instead of loading scene
+        if (gameModeModal != null)
+        {
+            gameModeModal.SetActive(true);
+        }
+        else
+        {
+            // Fallback if modal not assigned
+            StartStoryMode();
+        }
+    }
+
+    public void StartStoryMode()
+    {
         SceneManager.LoadScene("WorldMap");
+    }
+
+    public void StartFrenzyMode()
+    {
+        SceneManager.LoadScene("FrenzyBattle");
+    }
+
+    public void CloseGameModeModal()
+    {
+        if (gameModeModal != null)
+            gameModeModal.SetActive(false);
     }
 
     public void Salir()

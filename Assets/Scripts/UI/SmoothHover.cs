@@ -20,7 +20,14 @@ public class SmoothHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     void Awake()
     {
+        // Safety check: if the object starts with 0 scale (e.g. for animation), 
+        // we assume the original scale should be (1,1,1) or the value before animation.
         originalScale = transform.localScale;
+        if (originalScale.magnitude < 0.01f)
+        {
+            originalScale = Vector3.one;
+        }
+        
         targetScale = originalScale;
         targetImage = GetComponent<UnityEngine.UI.Image>();
         if (targetImage != null)
@@ -29,11 +36,22 @@ public class SmoothHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
     }
 
+    void OnEnable()
+    {
+        // Sync targetScale with current scale to avoid snapping if enabled during animation
+        targetScale = transform.localScale;
+        if (targetScale.magnitude < 0.01f) targetScale = originalScale;
+    }
+
     void OnDisable()
     {
         // Reset state when disabled to avoid getting stuck in hover scale
-        transform.localScale = originalScale;
-        targetScale = originalScale;
+        // But only if we have a valid original scale
+        if (originalScale.magnitude > 0.01f)
+        {
+            transform.localScale = originalScale;
+            targetScale = originalScale;
+        }
         isHovered = false;
         if (targetImage != null) targetImage.color = originalColor;
     }

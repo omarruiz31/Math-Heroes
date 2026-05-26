@@ -71,8 +71,24 @@ public class BattleUI : MonoBehaviour
 
     private Coroutine timerCoroutine;
 
-    public void Setup(EnemyData enemy, int playerMaxHP, int playerHP)
+    private void SubmitCurrentAnswer(string input)
     {
+        if (BattleManager.Instance != null)
+            BattleManager.Instance.SubmitAnswer(input);
+        else if (FrenzyBattleManager.Instance != null)
+            FrenzyBattleManager.Instance.SubmitAnswer(input);
+    }
+
+    private void HandleTimeout()
+    {
+        if (BattleManager.Instance != null)
+            BattleManager.Instance.TimeOut();
+        else if (FrenzyBattleManager.Instance != null)
+            FrenzyBattleManager.Instance.TimeOut();
+    }
+
+    public void Setup(EnemyData enemy, int playerMaxHP, int playerHP)
+{
         enemyNameText.text  = enemy.enemyName;
         enemyHPBar.maxValue = enemy.maxHP;
         enemyHPBar.value    = enemy.maxHP;
@@ -98,13 +114,11 @@ public class BattleUI : MonoBehaviour
         correctAnswerText.text = "";
 
         submitButton.onClick.RemoveAllListeners();
-        submitButton.onClick.AddListener(() =>
-            BattleManager.Instance.SubmitAnswer(answerInput.text));
+        submitButton.onClick.AddListener(() => SubmitCurrentAnswer(answerInput.text));
 
         // Enter también envía la respuesta
         answerInput.onSubmit.RemoveAllListeners();
-        answerInput.onSubmit.AddListener(val =>
-            BattleManager.Instance.SubmitAnswer(val));
+        answerInput.onSubmit.AddListener(val => SubmitCurrentAnswer(val));
 
         returnButton.onClick.RemoveAllListeners();
         if (exitButton != null)
@@ -149,7 +163,7 @@ public class BattleUI : MonoBehaviour
         timerText.text = "0";
         answerInput.interactable = false;
         submitButton.interactable = false;
-        BattleManager.Instance.TimeOut();
+        HandleTimeout();
     }
 
     public void StopTimer()

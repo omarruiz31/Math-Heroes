@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BosqueResta.unity
     guid: bccde1708f0100a44ad75e933cbff05d
+  - enabled: 1
+    path: Assets/Scenes/FrenzyBattle.unity
+    guid: 9816ad2a90dc8437ab979a977e167c48
   m_configObjects: {}

@@ -22,12 +22,8 @@ public class MenuAnimator : MonoBehaviour
     [SerializeField] private float buttonStaggerDelay = 0.15f;
     [SerializeField] private float buttonSlideDuration = 0.4f;
 
-    [Header("=== Button Hover ===")]
-    [SerializeField] private float hoverScale = 1.08f;
-    [SerializeField] private float hoverScaleSpeed = 8f;
-
     [Header("=== Floating Logo ===")]
-    [SerializeField] private float floatAmplitude = 8f;
+[SerializeField] private float floatAmplitude = 8f;
     [SerializeField] private float floatSpeed = 1.5f;
 
     [Header("=== Particle Stars (Optional) ===")]
@@ -56,6 +52,7 @@ public class MenuAnimator : MonoBehaviour
     {
         if (!hasPlayedEntrance)
         {
+            DisableSmoothHovers();
             StartCoroutine(PlayEntranceAnimation());
             hasPlayedEntrance = true;
         }
@@ -68,10 +65,37 @@ public class MenuAnimator : MonoBehaviour
             {
                 foreach (Button btn in menuButtons)
                 {
-                    if (btn != null) btn.GetComponent<RectTransform>().localScale = Vector3.one;
+                    if (btn != null)
+                    {
+                        btn.GetComponent<RectTransform>().localScale = Vector3.one;
+                        var sh = btn.GetComponent<SmoothHover>();
+                        if (sh != null) sh.enabled = true;
+                    }
                 }
             }
             animationComplete = true;
+        }
+    }
+
+    private void DisableSmoothHovers()
+    {
+        if (menuButtons == null) return;
+        foreach (Button btn in menuButtons)
+        {
+            if (btn == null) continue;
+            var sh = btn.GetComponent<SmoothHover>();
+            if (sh != null) sh.enabled = false;
+        }
+    }
+
+    private void EnableSmoothHovers()
+    {
+        if (menuButtons == null) return;
+        foreach (Button btn in menuButtons)
+        {
+            if (btn == null) continue;
+            var sh = btn.GetComponent<SmoothHover>();
+            if (sh != null) sh.enabled = true;
         }
     }
 
@@ -172,6 +196,7 @@ public class MenuAnimator : MonoBehaviour
         }
 
         animationComplete = true;
+        EnableSmoothHovers();
     }
 
     private IEnumerator PopButtonIn(RectTransform rt)
@@ -195,40 +220,6 @@ public class MenuAnimator : MonoBehaviour
         {
             float offset = Mathf.Sin(Time.unscaledTime * floatSpeed) * floatAmplitude;
             logoTransform.anchoredPosition = logoStartPos + Vector2.up * offset;
-        }
-
-        // Button hover scale
-        if (menuButtons != null)
-        {
-            foreach (Button btn in menuButtons)
-            {
-                if (btn == null) continue;
-                RectTransform rt = btn.GetComponent<RectTransform>();
-                bool isHovered = EventSystem.current != null &&
-                                 EventSystem.current.currentSelectedGameObject == btn.gameObject;
-
-                // Also check pointer hover via raycasting
-                if (!isHovered)
-                {
-                    PointerEventData pointerData = new PointerEventData(EventSystem.current);
-                    pointerData.position = Input.mousePosition;
-                    var results = new System.Collections.Generic.List<RaycastResult>();
-                    EventSystem.current.RaycastAll(pointerData, results);
-                    foreach (var result in results)
-                    {
-                        if (result.gameObject == btn.gameObject)
-                        {
-                            isHovered = true;
-                            break;
-                        }
-                    }
-                }
-
-                float targetScale = isHovered ? hoverScale : 1f;
-                float currentScale = rt.localScale.x;
-                float newScale = Mathf.Lerp(currentScale, targetScale, Time.unscaledDeltaTime * hoverScaleSpeed);
-                rt.localScale = Vector3.one * newScale;
-            }
         }
     }
 
