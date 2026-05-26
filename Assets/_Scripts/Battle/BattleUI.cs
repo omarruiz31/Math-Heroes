@@ -357,7 +357,16 @@ public class BattleUI : MonoBehaviour
     private void ReturnToMap()
     {
         StopTimer();
-        GameManager.Instance.ReturnToMap();
+        
+        // Si estamos en modo frenesí, usamos su lógica de salida (que va al menú)
+        if (FrenzyBattleManager.Instance != null)
+        {
+            FrenzyBattleManager.Instance.ManualExit();
+        }
+        else
+        {
+            GameManager.Instance.ReturnToMap();
+        }
     }
 
     private void RetryBattle()
