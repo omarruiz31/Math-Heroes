@@ -28,10 +28,10 @@ public class ScenePortal : MonoBehaviour
             if (requireButtonPress)
             {
                 playerInRange = true;
-                // Mostrar el mismo cartel de "Presiona [E]" que hicimos para los NPCs
+                // Mostrar cartel de interacción para viajar
                 if (DialogueManager.Instance != null)
                 {
-                    DialogueManager.Instance.ShowInteractPrompt(true);
+                    DialogueManager.Instance.ShowInteractPrompt(true, "Presiona [E] para viajar");
                 }
             }
             else

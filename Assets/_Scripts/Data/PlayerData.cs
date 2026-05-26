@@ -35,6 +35,11 @@ public class PlayerData
     public int totalBattlesWon = 0;
     public int totalBattlesLost = 0;
 
+    // ─── Modo Frenesí (NUEVO) ───
+    public int frenzyHighscore = 0;
+    public int totalFrenzyEnemiesDefeated = 0;
+    public int totalFrenzySessions = 0;
+
     // ═══════════════════════════════════════════
     //  MÉTODOS DE PROGRESIÓN (RF 05, 11, 13)
     // ═══════════════════════════════════════════
@@ -119,6 +124,19 @@ public class PlayerData
         totalWrongAnswers += wrongAnswers;
         if (won) totalBattlesWon++;
         else totalBattlesLost++;
+    }
+
+    /// <summary>
+    /// Registra el resultado de una sesión de modo frenesí.
+    /// </summary>
+    public void RecordFrenzySession(int enemiesDefeated)
+    {
+        totalFrenzySessions++;
+        totalFrenzyEnemiesDefeated += enemiesDefeated;
+        if (enemiesDefeated > frenzyHighscore)
+        {
+            frenzyHighscore = enemiesDefeated;
+        }
     }
 
     // ═══════════════════════════════════════════

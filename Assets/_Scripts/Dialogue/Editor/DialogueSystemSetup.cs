@@ -180,6 +180,7 @@ public class DialogueSystemSetup : EditorWindow
         manager.dialogueText = dialogText;
         manager.portraitImage = portraitImg;
         manager.interactPrompt = interactPromptObj;
+        manager.interactPromptText = promptText;
 
         // Limpiar seleccion y mostrar mensaje
         Selection.activeGameObject = managerObj;

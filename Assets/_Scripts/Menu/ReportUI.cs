@@ -245,30 +245,23 @@ public class ReportUI : MonoBehaviour
         }
 
         sb.AppendLine();
+        sb.AppendLine("<color=#AAAAAA>─────────────────────────────────────</color>");
+        sb.AppendLine();
 
-        // ─── Últimas 20 preguntas ───
-        sb.AppendLine("<size=22><color=#4FC3F7>ULTIMAS 20 PREGUNTAS</color></size>");
+        // ─── Modo Frenesí ───
+        sb.AppendLine("<size=22><color=#FF5252>ESTADÍSTICAS MODO FRENESÍ</color></size>");
 
-        List<QuestionRecord> recent = data.GetRecentQuestions(20);
-        if (recent.Count == 0)
+        if (data.totalFrenzySessions == 0)
         {
-            sb.AppendLine("  <color=#888888>No hay preguntas registradas.</color>");
+            sb.AppendLine("  <color=#888888>Aún no has participado en el modo frenesí.</color>");
         }
         else
         {
-            // Mostrar más recientes primero
-            for (int i = recent.Count - 1; i >= 0; i--)
-            {
-                QuestionRecord q = recent[i];
-                string icon = q.wasCorrect ? "<color=#66BB6A>[OK]</color>" : "<color=#EF5350>[X]</color>";
-                string answerStr = q.playerAnswer == -999
-                    ? "<color=#FFA726>Sin respuesta</color>"
-                    : $"Respondió: <color=#FFFFFF>{q.playerAnswer}</color>";
-
-                sb.AppendLine($"  {icon} {q.numberA} {q.operation} {q.numberB} = {q.correctAnswer}" +
-                              $"  |  {answerStr}  |  {q.timeUsed:F1}s" +
-                              $"  <color=#AAAAAA>({q.date})</color>");
-            }
+            float avgEnemies = (float)data.totalFrenzyEnemiesDefeated / data.totalFrenzySessions;
+            sb.AppendLine($"  Récord máximo:        <color=#FFD700>{data.frenzyHighscore} enemigos</color>");
+            sb.AppendLine($"  Enemigos totales:     <color=#FFFFFF>{data.totalFrenzyEnemiesDefeated}</color>");
+            sb.AppendLine($"  Promedio por sesión:  <color=#FFFFFF>{avgEnemies:F1}</color>");
+            sb.AppendLine($"  Sesiones jugadas:     <color=#FFFFFF>{data.totalFrenzySessions}</color>");
         }
 
         sb.AppendLine();

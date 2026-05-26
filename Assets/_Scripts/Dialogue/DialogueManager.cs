@@ -34,6 +34,7 @@ public class DialogueManager : MonoBehaviour
 
     [Header("Interact Prompt")]
     public GameObject interactPrompt;
+    public TextMeshProUGUI interactPromptText;
 
     private Queue<DialogueLine> sentences;
     private bool isTyping = false;
@@ -63,10 +64,14 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void ShowInteractPrompt(bool show)
+    public void ShowInteractPrompt(bool show, string message = "Presiona [E] para hablar")
     {
         if (interactPrompt != null && !dialogueUI.activeSelf)
         {
+            if (show && interactPromptText != null)
+            {
+                interactPromptText.text = message;
+            }
             interactPrompt.SetActive(show);
         }
     }

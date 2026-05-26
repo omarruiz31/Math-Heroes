@@ -187,6 +187,13 @@ public List<EnemyData> enemyPool;
 
     void EndFrenzy()
     {
+        // Guardar estadísticas del modo frenesí
+        if (GameManager.Instance != null && GameManager.Instance.playerData != null)
+        {
+            GameManager.Instance.playerData.RecordFrenzySession(enemiesDefeated);
+            SaveSystem.Save(GameManager.Instance.playerData);
+        }
+
         // Record the session?
         GameManager.Instance.OnBattleLost(enemyData.enemyName); // Reusing logic for now
         ui.ShowResult(false);
