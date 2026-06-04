@@ -1,4 +1,4 @@
-Crear un videojuego educativo que convierta la práctica matemática en una experiencia divertida, visual e interactiva, ayudando a mejorar la atención, la motivación y la comprensión de los temas matemáticos básicos.
+MATH-HEROES un videojuego educativo que convierte la práctica matemática en una experiencia divertida, visual e interactiva, ayudando a mejorar la atención, la motivación y la comprensión de los temas matemáticos básicos.
 
 -Dirigido a estudiantes de entre 5 y 12 años que se encuentren cursando nivel primaria y necesiten reforzar sus habilidades matemáticas básicas.
 
