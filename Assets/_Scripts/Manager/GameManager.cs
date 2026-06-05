@@ -162,12 +162,14 @@ private const string BattleSceneName = "BattleScene";
     {
         if (enemy == null)
         {
-            Debug.LogWarning("No se puede iniciar una batalla sin EnemyData.");
+            Debug.LogError("[GameManager] Intentando iniciar batalla con EnemyData NULL.");
             return;
         }
 
+        Debug.Log($"[GameManager] Iniciando transición a batalla contra: {enemy.enemyName}");
+
         StartCoroutine(TransitionToScene(BattleSceneName, () => {
-            currentEnemy = enemy;
+currentEnemy = enemy;
             currentEnvironment = environment;
 
             // Resetear contadores de la batalla actual

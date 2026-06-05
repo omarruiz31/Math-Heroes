@@ -24,22 +24,34 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log($"[BattleManager] Starting battle initialization. GameManager: {(GameManager.Instance != null ? "Found" : "NULL")}");
+
         if (GameManager.Instance == null)
         {
-            Debug.LogError("BattleManager necesita un GameManager activo en la escena.");
-            ui.ShowResult(false);
+            Debug.LogError("BattleManager: No se encontró el GameManager. Asegúrate de iniciar el juego desde el Menú.");
+            // No mostramos el resultado de inmediato para evitar pantalla negra sin feedback
+            if (ui != null) ui.feedbackText.text = "Error: GameManager no encontrado";
             return;
         }
 
         enemyData = GameManager.Instance.currentEnemy;
+        Debug.Log($"[BattleManager] Current Enemy: {(enemyData != null ? enemyData.enemyName : "NULL")}");
+
         if (enemyData == null)
         {
-            Debug.LogError("No hay enemigo seleccionado para la batalla.");
-            ui.ShowResult(false);
+            Debug.LogError("BattleManager: No hay enemigo seleccionado para la batalla.");
+            if (ui != null) ui.feedbackText.text = "Error: No hay enemigo seleccionado";
+            // ui.ShowResult(false); // Evitamos mostrar el panel de derrota inmediatamente
             return;
         }
 
         enemyCurrentHP = enemyData.maxHP;
+
+        if (ui == null)
+        {
+            Debug.LogError("BattleManager: Referencia a BattleUI es NULL.");
+            return;
+        }
 
         ui.Setup(enemyData, GameManager.Instance.playerMaxHP,
                  GameManager.Instance.playerCurrentHP);
