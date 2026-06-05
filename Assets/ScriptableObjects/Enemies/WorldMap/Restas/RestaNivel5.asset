@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyLevel: 5
   enemyTitle: 
-  enemyName: Enemigo de Resta 5
+  enemyName: Limo
   sprite: {fileID: 21300000, guid: 15dc4eb01dbeea343b3b8dfcdeb10bb6, type: 3}
   animatorController: {fileID: 9100000, guid: 997a405e5a64b5c4087d6af2e89a9d60, type: 2}
   maxHP: 130
@@ -24,10 +24,10 @@ MonoBehaviour:
   useSubtraction: 1
   useMultiplication: 0
   useDivision: 0
-  minNumber: 9
-  maxNumber: 30
-  questionTimeLimit: 15
+  minNumber: 24
+  maxNumber: 70
+  questionTimeLimit: 10
   damageMultiplier: 1
   criticalChance: 0
   criticalBonusDamage: 10
-  dodgeChance: 0
+  dodgeChance: 0.2

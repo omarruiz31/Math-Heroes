@@ -218,15 +218,15 @@ public class MenuSystem : MonoBehaviour
         PlayerPrefs.SetFloat("MusicVolume", volume);
         PlayerPrefs.Save();
         
+        MusicVolumeBinder.RefreshAll();
+        
+        // Apply to specific backgroundMusic if assigned (for immediate feedback)
         if (backgroundMusic != null)
         {
             backgroundMusic.volume = volume;
         }
-        
-        // Apply to all active audio listeners or sources if needed, 
-        // but typically handled by specific objects in scenes.
     }
-    
+
     public void SetSFXVolume(float volume)
     {
         PlayerPrefs.SetFloat("SFXVolume", volume);

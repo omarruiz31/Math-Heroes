@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyLevel: 3
   enemyTitle: 
-  enemyName: "Enemigo de Multiplicaci\xF3n 3"
+  enemyName: Escarabajo
   sprite: {fileID: 21300000, guid: 3c0027c84b538f746957031dd45b4da3, type: 3}
   animatorController: {fileID: 9100000, guid: 92ac96d13992d1e45bb5519bc16468cf, type: 2}
-  maxHP: 110
+  maxHP: 130
   attackDamage: 50
   defense: 5
   useAddition: 0
   useSubtraction: 0
   useMultiplication: 1
   useDivision: 0
-  minNumber: 2
-  maxNumber: 7
+  minNumber: 3
+  maxNumber: 14
   questionTimeLimit: 10
   damageMultiplier: 1
   criticalChance: 0
   criticalBonusDamage: 10
-  dodgeChance: 0
+  dodgeChance: 0.2

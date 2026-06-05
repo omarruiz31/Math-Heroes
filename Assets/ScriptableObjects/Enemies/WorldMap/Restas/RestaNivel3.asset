@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyLevel: 3
   enemyTitle: 
-  enemyName: Enemigo de Resta 3
+  enemyName: "Zarig\xFCeya"
   sprite: {fileID: 21300000, guid: baa0c643131554ff99574059ec7da1cc, type: 3}
   animatorController: {fileID: 9100000, guid: 6a00242ccf6bae947ba1a8065e70f60e, type: 2}
   maxHP: 90
@@ -24,9 +24,9 @@ MonoBehaviour:
   useSubtraction: 1
   useMultiplication: 0
   useDivision: 0
-  minNumber: 5
-  maxNumber: 20
-  questionTimeLimit: 10
+  minNumber: 14
+  maxNumber: 40
+  questionTimeLimit: 12
   damageMultiplier: 1
   criticalChance: 0
   criticalBonusDamage: 10

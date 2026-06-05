@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyLevel: 6
   enemyTitle: 
-  enemyName: "Enemigo de Multiplicaci\xF3n 6"
+  enemyName: Perro
   sprite: {fileID: 21300000, guid: d31f46d309957764298b96bbd18f8b18, type: 3}
   animatorController: {fileID: 9100000, guid: 67c716b1f11d3dc489685ec26ea36bd9, type: 2}
-  maxHP: 185
-  attackDamage: 50
+  maxHP: 200
+  attackDamage: 60
   defense: 5
   useAddition: 0
   useSubtraction: 0
   useMultiplication: 1
   useDivision: 0
   minNumber: 3
-  maxNumber: 10
-  questionTimeLimit: 10
+  maxNumber: 16
+  questionTimeLimit: 8
   damageMultiplier: 1
   criticalChance: 0
   criticalBonusDamage: 10
-  dodgeChance: 0
+  dodgeChance: 0.3

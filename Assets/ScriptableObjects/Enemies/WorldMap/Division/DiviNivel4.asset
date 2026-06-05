@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyLevel: 4
   enemyTitle: Nivel4
-  enemyName: "Enemigo de Divisi\xF3n 4"
+  enemyName: Rana
   sprite: {fileID: 21300000, guid: 86ca59b9bca0e409b9ba2784fbe69f01, type: 3}
   animatorController: {fileID: 9100000, guid: 965e0f314868db7459bd29b788b20463, type: 2}
   maxHP: 160

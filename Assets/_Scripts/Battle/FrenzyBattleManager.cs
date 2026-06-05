@@ -196,6 +196,7 @@ public List<EnemyData> enemyPool;
         {
             GameManager.Instance.playerData.RecordFrenzySession(enemiesDefeated);
             SaveSystem.Save(GameManager.Instance.playerData);
+            GameManager.Instance.HealPlayerToFull(); // Restaurar vida al terminar
         }
 
         sessionRecorded = true;
@@ -212,6 +213,7 @@ public List<EnemyData> enemyPool;
         {
             GameManager.Instance.playerData.RecordFrenzySession(enemiesDefeated);
             SaveSystem.Save(GameManager.Instance.playerData);
+            GameManager.Instance.HealPlayerToFull(); // Restaurar vida al salir
             sessionRecorded = true;
         }
         

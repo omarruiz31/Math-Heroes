@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyLevel: 3
   enemyTitle: 
-  enemyName: "Enemigo de Divisi\xF3n 3"
+  enemyName: "Zarig\xFCeya"
   sprite: {fileID: 21300000, guid: baa0c643131554ff99574059ec7da1cc, type: 3}
   animatorController: {fileID: 9100000, guid: 6a00242ccf6bae947ba1a8065e70f60e, type: 2}
   maxHP: 130
