@@ -26,19 +26,46 @@ public class MenuSystem : MonoBehaviour
     [Header("Game Mode Selection")]
     public GameObject gameModeModal;
 
+    [Header("Options UI")]
+    public Slider musicSlider;
+    public Slider sfxSlider;
+    public Slider qualitySlider;
+    public Toggle fullscreenToggle;
+
     private void Start()
-{
+    {
         // Find music source if not assigned
         if (backgroundMusic == null)
         {
             var musicObj = GameObject.Find("Music");
+            if (musicObj == null) musicObj = GameObject.Find("Musica");
             if (musicObj != null) backgroundMusic = musicObj.GetComponent<AudioSource>();
         }
+        
+        LoadSettings();
         
         if (errorText != null) errorText.gameObject.SetActive(false);
 
         // Configurar ReportUI
         SetupReportUI();
+    }
+
+    private void LoadSettings()
+    {
+        float musicVol = PlayerPrefs.GetFloat("MusicVolume", 0.7f);
+        float sfxVol = PlayerPrefs.GetFloat("SFXVolume", 0.7f);
+        int quality = PlayerPrefs.GetInt("QualityLevel", QualitySettings.GetQualityLevel());
+        bool isFull = PlayerPrefs.GetInt("Fullscreen", Screen.fullScreen ? 1 : 0) == 1;
+
+        if (musicSlider != null) musicSlider.value = musicVol;
+        if (sfxSlider != null) sfxSlider.value = sfxVol;
+        if (qualitySlider != null) qualitySlider.value = quality;
+        if (fullscreenToggle != null) fullscreenToggle.isOn = isFull;
+
+        SetMusicVolume(musicVol);
+        SetSFXVolume(sfxVol);
+        SetQuality(quality);
+        SetFullscreen(isFull);
     }
 
     /// <summary>
@@ -188,28 +215,38 @@ public class MenuSystem : MonoBehaviour
 
     public void SetMusicVolume(float volume)
     {
+        PlayerPrefs.SetFloat("MusicVolume", volume);
+        PlayerPrefs.Save();
+        
         if (backgroundMusic != null)
         {
             backgroundMusic.volume = volume;
         }
+        
+        // Apply to all active audio listeners or sources if needed, 
+        // but typically handled by specific objects in scenes.
     }
     
     public void SetSFXVolume(float volume)
     {
-        // En un futuro podrías aplicar esto a un AudioMixer
-        Debug.Log("SFX Volume set to: " + volume);
         PlayerPrefs.SetFloat("SFXVolume", volume);
+        PlayerPrefs.Save();
+        Debug.Log("SFX Volume set to: " + volume);
     }
 
     public void SetFullscreen(bool isFullscreen)
     {
         Screen.fullScreen = isFullscreen;
+        PlayerPrefs.SetInt("Fullscreen", isFullscreen ? 1 : 0);
+        PlayerPrefs.Save();
         Debug.Log("Fullscreen set to: " + isFullscreen);
     }
 
     public void SetQuality(int qualityIndex)
     {
         QualitySettings.SetQualityLevel(qualityIndex);
+        PlayerPrefs.SetInt("QualityLevel", qualityIndex);
+        PlayerPrefs.Save();
         Debug.Log("Quality set to: " + QualitySettings.names[qualityIndex]);
     }
 

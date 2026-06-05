@@ -3,6 +3,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewEnemy", menuName = "Battle/Enemy Data")]
 public class EnemyData : ScriptableObject
 {
+    [Header("Visuales")]
+    public int enemyLevel = 1;
+    public string enemyTitle = "";
+
     [Header("Identidad")]
     public string enemyName;
     public Sprite sprite;                                // Sprite estático (fallback)

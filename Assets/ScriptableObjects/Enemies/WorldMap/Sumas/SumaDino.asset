@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 696d415ba7d624c57aeb6950b77165e2, type: 3}
   m_Name: SumaDino
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  enemyLevel: 2
+  enemyTitle: 
   enemyName: SumaDino
-  sprite: {fileID: 21300000, guid: 671a594cd6415e04ba0bf26a8eae3621, type: 3}
-  animatorController: {fileID: 9100000, guid: ee4cf4b2a666e004882e6e2c0716247d, type: 2}
+  sprite: {fileID: 21300000, guid: 05806b63f014ac3449ddae915b77a961, type: 3}
+  animatorController: {fileID: 9100000, guid: 6335f15cd83a0e54f8857f7a5dd177f2, type: 2}
   maxHP: 120
   attackDamage: 10
   defense: 2
