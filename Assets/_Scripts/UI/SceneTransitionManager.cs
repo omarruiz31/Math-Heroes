@@ -38,8 +38,14 @@ public class SceneTransitionManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void Start()
     {
+        // Safety: Ensure we always try to fade in when the object starts or scene changes
+        StartCoroutine(FadeIn());
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+{
         StopAllCoroutines();
         StartCoroutine(FadeIn());
     }
