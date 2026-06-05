@@ -1,7 +1,36 @@
-MATH-HEROES un videojuego educativo que convierte la práctica matemática en una experiencia divertida, visual e interactiva, ayudando a mejorar la atención, la motivación y la comprensión de los temas matemáticos básicos.
+# MATH-HEROES
 
--Dirigido a estudiantes de entre 5 y 12 años que se encuentren cursando nivel primaria y necesiten reforzar sus habilidades matemáticas básicas.
+## Descripción
 
--Puede utilizarse como una herramienta didáctica de apoyo en clases, ayudando a la docente a hacer el aprendizaje más dinámico e interactivo.
+MATH-HEROES es un videojuego educativo diseñado para convertir la práctica de las matemáticas en una experiencia interactiva y entretenida. Su propósito es apoyar el aprendizaje de conceptos matemáticos básicos mediante actividades dinámicas que fomentan la participación, la motivación y el razonamiento lógico de los estudiantes.
 
--Permite reforzar el aprendizaje desde casa mediante actividades educativas entretenidas que motivan a los niños a practicar matemáticas.
+---
+
+## Objetivo
+
+Desarrollar una herramienta educativa que ayude a reforzar el aprendizaje de las matemáticas básicas a través de la gamificación, facilitando la comprensión de los temas y promoviendo una experiencia de aprendizaje más atractiva.
+
+---
+
+## Público Objetivo
+
+Este proyecto está dirigido a:
+
+- Estudiantes de nivel primaria entre 5 y 12 años.
+- Niños que presentan dificultades en el aprendizaje de las matemáticas.
+- Docentes que buscan complementar sus estrategias de enseñanza con recursos interactivos.
+- Padres de familia interesados en reforzar el aprendizaje desde casa.
+
+---
+
+## Características
+
+- Actividades matemáticas interactivas.
+- Aprendizaje basado en mecánicas de juego.
+- Interfaz amigable y accesible para niños.
+- Retroalimentación inmediata durante las actividades.
+- Refuerzo de habilidades lógico-matemáticas.
+- Entorno educativo atractivo y dinámico.
+
+
+ecto desarrollado como parte de una iniciativa académica orientada a la creación de herramientas tecnológicas para apoyar la enseñanza y el aprendizaje de las matemáticas.
