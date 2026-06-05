@@ -250,18 +250,14 @@ public class BattleUI : MonoBehaviour
             : 0f;
         int xpGained = playerWon ? 20 + (gm.battleCorrectAnswers * 5) : 0;
 
-        // Cambiar colores del Modal y TitleBar
+        // Cambiar colores del Modal y TitleBar (Puesto transparente para mostrar el nuevo diseño del usuario)
         if (modalBorderImage != null)
         {
-            modalBorderImage.color = playerWon
-                ? new Color(0.3f, 0.75f, 0.45f, 1f)
-                : new Color(0.85f, 0.3f, 0.3f, 1f);
+            modalBorderImage.color = Color.clear;
         }
         if (titleBarImage != null)
         {
-            titleBarImage.color = playerWon
-                ? new Color(0.15f, 0.5f, 0.3f, 1f)
-                : new Color(0.6f, 0.15f, 0.15f, 1f);
+            titleBarImage.color = Color.clear;
         }
 
         // Título y Subtítulo
@@ -318,7 +314,7 @@ public class BattleUI : MonoBehaviour
             if (levelText != null)
             {
                 levelText.text = gm.playerData != null ? $"Nivel actual: {gm.playerData.level}" : "";
-                levelText.color = new Color(0.7f, 0.7f, 0.8f);
+                levelText.color = Color.black;
             }
         }
         else
@@ -326,7 +322,7 @@ public class BattleUI : MonoBehaviour
             if (xpGainedText != null)
             {
                 xpGainedText.text = "No te rindas, ¡inténtalo de nuevo!";
-                xpGainedText.color = new Color(1f, 0.65f, 0.15f);
+                xpGainedText.color = Color.black;
             }
             if (levelText != null)
             {

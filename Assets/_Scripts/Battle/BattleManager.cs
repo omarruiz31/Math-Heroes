@@ -43,6 +43,26 @@ public class BattleManager : MonoBehaviour
 
         ui.Setup(enemyData, GameManager.Instance.playerMaxHP,
                  GameManager.Instance.playerCurrentHP);
+
+        // Tutorial logic (RF 14)
+        if (GameManager.Instance.playerData != null && !GameManager.Instance.playerData.battleTutorialCompleted)
+        {
+            var tutorial = GetComponent<BattleTutorial>();
+            if (tutorial != null)
+            {
+                tutorial.StartTutorial(ui);
+                return;
+            }
+        }
+
+        StartCoroutine(NextTurn());
+    }
+
+    /// <summary>
+    /// Llamado desde BattleTutorial al terminar.
+    /// </summary>
+    public void StartBattleAfterTutorial()
+    {
         StartCoroutine(NextTurn());
     }
 

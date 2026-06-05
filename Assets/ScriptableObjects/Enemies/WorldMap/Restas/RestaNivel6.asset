@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 696d415ba7d624c57aeb6950b77165e2, type: 3}
+  m_Name: RestaNivel6
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  enemyLevel: 6
+  enemyTitle: 
+  enemyName: Enemigo de Resta 6
+  sprite: {fileID: 21300000, guid: 8154dd34746465c4e9e4cdcb0f6ef113, type: 3}
+  animatorController: {fileID: 9100000, guid: ae7c4f2b1e5b97649b16af3fec3041b2, type: 2}
+  maxHP: 150
+  attackDamage: 50
+  defense: 5
+  useAddition: 0
+  useSubtraction: 1
+  useMultiplication: 0
+  useDivision: 0
+  minNumber: 15
+  maxNumber: 50
+  questionTimeLimit: 10
+  damageMultiplier: 1
+  criticalChance: 0
+  criticalBonusDamage: 10
+  dodgeChance: 0

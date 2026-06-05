@@ -10,21 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 696d415ba7d624c57aeb6950b77165e2, type: 3}
-  m_Name: Opossum
+  m_Name: RestaNivel1
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  enemyName: Opossum
-  sprite: {fileID: 21300000, guid: baa0c643131554ff99574059ec7da1cc, type: 3}
-  animatorController: {fileID: 9100000, guid: 6a00242ccf6bae947ba1a8065e70f60e, type: 2}
+  enemyLevel: 1
+  enemyTitle: Nivel4
+  enemyName: Enemigo de Resta 1
+  sprite: {fileID: 21300000, guid: f240dfd4814d34d55a9b033f3c9d8a60, type: 3}
+  animatorController: {fileID: 9100000, guid: 6f462620e81c7be4f9c392f019bc7c72, type: 2}
   maxHP: 50
-  attackDamage: 10
+  attackDamage: 25
   defense: 5
-  useAddition: 1
-  useSubtraction: 0
+  useAddition: 0
+  useSubtraction: 1
   useMultiplication: 0
   useDivision: 0
   minNumber: 1
   maxNumber: 10
-  questionTimeLimit: 15
+  questionTimeLimit: 13
   damageMultiplier: 1
   criticalChance: 0
   criticalBonusDamage: 10

@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 696d415ba7d624c57aeb6950b77165e2, type: 3}
   m_Name: OsoMultiplicador
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  enemyLevel: 1
+  enemyTitle: 
   enemyName: Oso
-  sprite: {fileID: 21300000, guid: 05806b63f014ac3449ddae915b77a961, type: 3}
-  animatorController: {fileID: 9100000, guid: 6335f15cd83a0e54f8857f7a5dd177f2, type: 2}
+  sprite: {fileID: 21300000, guid: f7155fac0d464a04796941cd3fbbfaac, type: 3}
+  animatorController: {fileID: 9100000, guid: e7f36d860ebe37c47b93ddc6dd72b06d, type: 2}
   maxHP: 100
   attackDamage: 15
   defense: 5

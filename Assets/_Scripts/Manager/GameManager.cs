@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
-    private const string BattleSceneName = "BattleScene";
+private const string BattleSceneName = "BattleScene";
     private string lastMapSceneName = "WorldMap";
 
     private AudioSource audioSource;
@@ -153,6 +154,9 @@ public class GameManager : MonoBehaviour
     //  BATALLAS
     // ═══════════════════════════════════════════
 
+    [Header("Transition")]
+    [SerializeField] private GameObject sceneTransitionPrefab;
+
     public void StartBattle(EnemyData enemy, BattleEnvironmentData environment = null)
     {
         if (enemy == null)
@@ -161,22 +165,38 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        currentEnemy = enemy;
-        currentEnvironment = environment;
+        StartCoroutine(TransitionToScene(BattleSceneName, () => {
+            currentEnemy = enemy;
+            currentEnvironment = environment;
 
-        // Resetear contadores de la batalla actual
-        battleCorrectAnswers = 0;
-        battleWrongAnswers = 0;
-        battleStartTime = Time.time;
+            // Resetear contadores de la batalla actual
+            battleCorrectAnswers = 0;
+            battleWrongAnswers = 0;
+            battleStartTime = Time.time;
 
-        // Guardar la escena actual antes de entrar a la batalla
-        string currentScene = SceneManager.GetActiveScene().name;
-        if (currentScene != BattleSceneName)
+            // Guardar la escena actual antes de entrar a la batalla
+            string currentScene = SceneManager.GetActiveScene().name;
+            if (currentScene != BattleSceneName)
+            {
+                lastMapSceneName = currentScene;
+            }
+        }));
+    }
+
+    private IEnumerator TransitionToScene(string sceneName, System.Action beforeLoad = null)
+    {
+        if (SceneTransitionManager.Instance == null && sceneTransitionPrefab != null)
         {
-            lastMapSceneName = currentScene;
+            Instantiate(sceneTransitionPrefab);
         }
 
-        SceneManager.LoadScene(BattleSceneName);
+        if (SceneTransitionManager.Instance != null)
+        {
+            yield return SceneTransitionManager.Instance.FadeOut();
+        }
+        
+        beforeLoad?.Invoke();
+        SceneManager.LoadScene(sceneName);
     }
 
     /// <summary>
@@ -192,7 +212,7 @@ public class GameManager : MonoBehaviour
 
         // Registrar en historial (RF 10)
         playerData.RecordBattle(enemyName, true, battleCorrectAnswers,
-                                battleWrongAnswers, battleTime);
+                                 battleWrongAnswers, battleTime);
 
         // Otorgar XP (RF 11)
         bool leveledUp = playerData.AddXP(xpGained);
@@ -222,7 +242,7 @@ public class GameManager : MonoBehaviour
         float battleTime = Time.time - battleStartTime;
 
         playerData.RecordBattle(enemyName, false, battleCorrectAnswers,
-                                battleWrongAnswers, battleTime);
+                                 battleWrongAnswers, battleTime);
 
         SaveSystem.Save(playerData);
     }
@@ -232,7 +252,7 @@ public class GameManager : MonoBehaviour
         if (playerCurrentHP <= 0)
             HealPlayerToFull();
 
-        SceneManager.LoadScene(lastMapSceneName);
+        StartCoroutine(TransitionToScene(lastMapSceneName));
     }
 
     /// <summary>
@@ -243,12 +263,12 @@ public class GameManager : MonoBehaviour
         if (playerCurrentHP <= 0)
             HealPlayerToFull();
 
-        // Resetear contadores de la batalla
-        battleCorrectAnswers = 0;
-        battleWrongAnswers = 0;
-        battleStartTime = Time.time;
-
-        SceneManager.LoadScene(BattleSceneName);
+        StartCoroutine(TransitionToScene(BattleSceneName, () => {
+            // Resetear contadores de la batalla
+            battleCorrectAnswers = 0;
+            battleWrongAnswers = 0;
+            battleStartTime = Time.time;
+        }));
     }
 
     public void HealPlayerToFull()

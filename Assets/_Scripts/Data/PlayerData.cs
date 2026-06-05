@@ -40,6 +40,9 @@ public class PlayerData
     public int totalFrenzyEnemiesDefeated = 0;
     public int totalFrenzySessions = 0;
 
+    // ─── Tutoriales ───
+    public bool battleTutorialCompleted = false;
+
     // ═══════════════════════════════════════════
     //  MÉTODOS DE PROGRESIÓN (RF 05, 11, 13)
     // ═══════════════════════════════════════════
