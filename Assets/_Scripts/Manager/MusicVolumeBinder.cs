@@ -5,6 +5,8 @@ public class MusicVolumeBinder : MonoBehaviour
 {
     private AudioSource audioSource;
 
+    public static event System.Action OnVolumeChanged;
+
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -15,6 +17,22 @@ public class MusicVolumeBinder : MonoBehaviour
         ApplyVolume();
     }
 
+    private void OnEnable()
+    {
+        OnVolumeChanged += ApplyVolume;
+        ApplyVolume();
+    }
+
+    private void OnDisable()
+    {
+        OnVolumeChanged -= ApplyVolume;
+    }
+
+    public static void RefreshAll()
+    {
+        OnVolumeChanged?.Invoke();
+    }
+
     public void ApplyVolume()
     {
         float volume = PlayerPrefs.GetFloat("MusicVolume", 0.7f);
@@ -22,11 +40,5 @@ public class MusicVolumeBinder : MonoBehaviour
         {
             audioSource.volume = volume;
         }
-    }
-
-    private void OnEnable()
-    {
-        // Refresh when returning to scene or enabled
-        ApplyVolume();
     }
 }

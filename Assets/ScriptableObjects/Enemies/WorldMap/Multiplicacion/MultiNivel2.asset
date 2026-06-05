@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyLevel: 2
   enemyTitle: 
-  enemyName: "Enemigo de Multiplicaci\xF3n 2"
+  enemyName: Oso
   sprite: {fileID: 21300000, guid: 05806b63f014ac3449ddae915b77a961, type: 3}
   animatorController: {fileID: 9100000, guid: 6335f15cd83a0e54f8857f7a5dd177f2, type: 2}
-  maxHP: 85
+  maxHP: 120
   attackDamage: 30
   defense: 5
   useAddition: 0
   useSubtraction: 0
   useMultiplication: 1
   useDivision: 0
-  minNumber: 1
-  maxNumber: 6
-  questionTimeLimit: 15
+  minNumber: 4
+  maxNumber: 11
+  questionTimeLimit: 12
   damageMultiplier: 1
   criticalChance: 0
   criticalBonusDamage: 10
-  dodgeChance: 0
+  dodgeChance: 0.1

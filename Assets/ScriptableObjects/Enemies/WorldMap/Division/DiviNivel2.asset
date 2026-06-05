@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyLevel: 2
   enemyTitle: 
-  enemyName: "Enemigo de Divisi\xF3n 2"
+  enemyName: Limo
   sprite: {fileID: 21300000, guid: 15dc4eb01dbeea343b3b8dfcdeb10bb6, type: 3}
   animatorController: {fileID: 9100000, guid: 997a405e5a64b5c4087d6af2e89a9d60, type: 2}
   maxHP: 100

@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyLevel: 5
   enemyTitle: 
-  enemyName: "Enemigo de Multiplicaci\xF3n 5"
+  enemyName: Dinosaurio
   sprite: {fileID: 21300000, guid: da1c5154cc5e7ec4ca5668915a5807d8, type: 3}
   animatorController: {fileID: 9100000, guid: 29d8cec4114872048b2ed9dbc5262e90, type: 2}
-  maxHP: 160
-  attackDamage: 30
+  maxHP: 180
+  attackDamage: 33
   defense: 5
   useAddition: 0
   useSubtraction: 0
   useMultiplication: 1
   useDivision: 0
   minNumber: 3
-  maxNumber: 9
+  maxNumber: 15
   questionTimeLimit: 15
   damageMultiplier: 1
   criticalChance: 0
   criticalBonusDamage: 10
-  dodgeChance: 0
+  dodgeChance: 0.3

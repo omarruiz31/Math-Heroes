@@ -94,8 +94,9 @@ private const string BattleSceneName = "BattleScene";
         if (audioSource != null && !audioSource.isPlaying)
             audioSource.Play();
 
-        // Aplica el volumen guardado por el menú de opciones
-        AudioListener.volume = PlayerPrefs.GetFloat("MusicVolume", 0.75f);
+        // Aplica el volumen guardado por el menú de opciones (Solo música si existe)
+        if (audioSource != null)
+            audioSource.volume = PlayerPrefs.GetFloat("MusicVolume", 0.75f);
     }
 
     // ═══════════════════════════════════════════
@@ -249,8 +250,7 @@ private const string BattleSceneName = "BattleScene";
 
     public void ReturnToMap()
     {
-        if (playerCurrentHP <= 0)
-            HealPlayerToFull();
+        HealPlayerToFull();
 
         StartCoroutine(TransitionToScene(lastMapSceneName));
     }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyLevel: 5
   enemyTitle: 
-  enemyName: "Enemigo de Divisi\xF3n 5"
+  enemyName: Oso
   sprite: {fileID: 21300000, guid: 05806b63f014ac3449ddae915b77a961, type: 3}
   animatorController: {fileID: 9100000, guid: 6335f15cd83a0e54f8857f7a5dd177f2, type: 2}
   maxHP: 190

@@ -58,9 +58,12 @@ public class BattleUI : MonoBehaviour
     [Header("Efectos Visuales")]
     public Sprite projectileSprite;
     public Sprite explosionSprite;
+    public Sprite confettiSprite;
+    public Sprite smokeSprite;
+    public RectTransform shakeContainer; // Nuevo: El contenedor que se agitará
 
     [Header("Ajustes de Proyectiles")]
-    [Tooltip("Opcional: Punto en la UI desde donde sale el proyectil del jugador y llega el del enemigo.")]
+[Tooltip("Opcional: Punto en la UI desde donde sale el proyectil del jugador y llega el del enemigo.")]
     public RectTransform playerProjectilePoint;
     [Tooltip("Opcional: Punto en la escena desde donde sale el proyectil del enemigo y llega el del jugador.")]
     public Transform enemyProjectilePoint;
@@ -89,8 +92,14 @@ public class BattleUI : MonoBehaviour
 
     public void Setup(EnemyData enemy, int playerMaxHP, int playerHP)
 {
+        // Aplicar volumen de SFX guardado
+        if (sfxSource != null)
+        {
+            sfxSource.volume = PlayerPrefs.GetFloat("SFXVolume", 0.7f);
+        }
+
         enemyNameText.text  = enemy.enemyName;
-        enemyHPBar.maxValue = enemy.maxHP;
+enemyHPBar.maxValue = enemy.maxHP;
         enemyHPBar.value    = enemy.maxHP;
         enemyHPText.text    = $"{enemy.maxHP} / {enemy.maxHP}";
 
@@ -114,14 +123,25 @@ public class BattleUI : MonoBehaviour
         correctAnswerText.text = "";
 
         submitButton.onClick.RemoveAllListeners();
-        submitButton.onClick.AddListener(() => SubmitCurrentAnswer(answerInput.text));
+        submitButton.onClick.AddListener(() => {
+            StartCoroutine(Pulse(submitButton.GetComponent<RectTransform>(), 1.1f, 0.15f));
+            SubmitCurrentAnswer(answerInput.text);
+        });
 
         // Enter también envía la respuesta
         answerInput.onSubmit.RemoveAllListeners();
-        answerInput.onSubmit.AddListener(val => SubmitCurrentAnswer(val));
+        answerInput.onSubmit.AddListener(val => {
+             StartCoroutine(Pulse(submitButton.GetComponent<RectTransform>(), 1.1f, 0.15f));
+             SubmitCurrentAnswer(val);
+        });
 
         returnButton.onClick.RemoveAllListeners();
-        if (exitButton != null)
+        returnButton.onClick.AddListener(() => {
+            StartCoroutine(Pulse(returnButton.GetComponent<RectTransform>(), 1.1f, 0.15f));
+            // Defer slightly to let animation finish if desired, or just run
+            ReturnToMap();
+        });
+if (exitButton != null)
         {
             exitButton.onClick.RemoveAllListeners();
             exitButton.onClick.AddListener(ReturnToMap);
@@ -146,12 +166,38 @@ public class BattleUI : MonoBehaviour
         submitButton.interactable = true;
         answerInput.ActivateInputField();
 
+        // Juice: Pulse question text
+        StartCoroutine(Pulse(questionText.rectTransform, 1.2f, 0.2f));
+
         if (timerCoroutine != null) StopCoroutine(timerCoroutine);
         timerCoroutine = StartCoroutine(RunTimer(timeLimit));
     }
 
-    IEnumerator RunTimer(int seconds)
+    private IEnumerator Pulse(RectTransform target, float scale, float duration)
     {
+        if (target == null) yield break;
+        Vector3 originalScale = Vector3.one;
+        Vector3 targetScale = new Vector3(scale, scale, 1f);
+
+        float elapsed = 0f;
+        while (elapsed < duration / 2f)
+        {
+            elapsed += Time.deltaTime;
+            target.localScale = Vector3.Lerp(originalScale, targetScale, elapsed / (duration / 2f));
+            yield return null;
+        }
+        elapsed = 0f;
+        while (elapsed < duration / 2f)
+        {
+            elapsed += Time.deltaTime;
+            target.localScale = Vector3.Lerp(targetScale, originalScale, elapsed / (duration / 2f));
+            yield return null;
+        }
+        target.localScale = originalScale;
+    }
+
+    IEnumerator RunTimer(int seconds)
+{
         int remaining = seconds;
         while (remaining > 0)
         {
@@ -185,11 +231,153 @@ public class BattleUI : MonoBehaviour
         {
             if (sfxSource && correctAnswerSound)
                 sfxSource.PlayOneShot(correctAnswerSound);
+            
+            TriggerConfetti();
+        }
+        else
+        {
+            TriggerSmoke();
+            StartCoroutine(ShakeUI(0.2f, 15f));
         }
     }
 
-    public void UpdateEnemyHP(int current, int max)
+    private void TriggerConfetti()
     {
+        StartCoroutine(AnimateConfetti());
+    }
+
+    private void TriggerSmoke()
+    {
+        // El humo aparece sobre el jugador
+        if (playerAnimator != null)
+            StartCoroutine(AnimateSmoke(playerAnimator.GetComponent<RectTransform>().anchoredPosition));
+    }
+
+    private IEnumerator AnimateConfetti()
+    {
+        for (int i = 0; i < 15; i++)
+        {
+            GameObject star = new GameObject("Star");
+            star.transform.SetParent(feedbackText.transform.parent, false);
+            Image img = star.AddComponent<Image>();
+            
+            Sprite starSprite = confettiSprite;
+            if (starSprite == null)
+            {
+#if UNITY_EDITOR
+                starSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/SunnyLand Artwork/Sprites/Fx/item-feedback/item-feedback-1.png");
+#endif
+            }
+            img.sprite = starSprite;
+            img.preserveAspect = true;
+
+            RectTransform rect = star.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(40f, 40f);
+            rect.anchoredPosition = feedbackText.rectTransform.anchoredPosition + new Vector2(Random.Range(-50f, 50f), Random.Range(-20f, 20f));
+
+            StartCoroutine(AnimateSingleConfetti(rect, img));
+            yield return new WaitForSeconds(0.05f);
+        }
+    }
+
+    private IEnumerator AnimateSingleConfetti(RectTransform rect, Image img)
+    {
+        Vector2 startPos = rect.anchoredPosition;
+        Vector2 velocity = new Vector2(Random.Range(-200f, 200f), Random.Range(100f, 400f));
+        float duration = 1.0f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            velocity += Vector2.down * 600f * Time.deltaTime; // Gravedad
+            rect.anchoredPosition += velocity * Time.deltaTime;
+            rect.Rotate(0f, 0f, 300f * Time.deltaTime);
+            img.color = new Color(1f, 1f, 1f, 1f - (elapsed / duration));
+            yield return null;
+        }
+        Destroy(rect.gameObject);
+    }
+
+    private IEnumerator AnimateSmoke(Vector2 pos)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            GameObject smoke = new GameObject("Smoke");
+            smoke.transform.SetParent(playerAnimator.transform.parent, false);
+            Image img = smoke.AddComponent<Image>();
+            
+            Sprite sSprite = smokeSprite;
+            if (sSprite == null)
+            {
+#if UNITY_EDITOR
+                sSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/SunnyLand Artwork/Sprites/Fx/enemy-death/enemy-death-1.png");
+#endif
+            }
+            img.sprite = sSprite;
+            img.preserveAspect = true;
+
+            RectTransform rect = smoke.GetComponent<RectTransform>();
+            rect.anchoredPosition = pos + new Vector2(Random.Range(-40f, 40f), Random.Range(-40f, 40f));
+            rect.sizeDelta = new Vector2(100f, 100f);
+
+            StartCoroutine(AnimateSingleSmoke(rect, img));
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    private IEnumerator AnimateSingleSmoke(RectTransform rect, Image img)
+    {
+        float duration = 0.5f;
+        float elapsed = 0f;
+        Vector2 startScale = Vector2.zero;
+        Vector2 endScale = Vector2.one * 1.5f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            rect.localScale = Vector2.Lerp(startScale, endScale, t);
+            img.color = new Color(1f, 1f, 1f, 1f - t);
+            yield return null;
+        }
+        Destroy(rect.gameObject);
+    }
+
+    private IEnumerator ShakeUI(float duration, float magnitude)
+    {
+        RectTransform target = shakeContainer;
+        
+        // Si no hay contenedor asignado, intentamos buscar el panel principal (resultPanel u otro)
+        if (target == null && resultPanel != null)
+        {
+            target = resultPanel.transform.parent as RectTransform;
+        }
+        
+        // Si sigue siendo null, usamos el primer RectTransform que encontremos en los hijos
+        if (target == null)
+        {
+            target = GetComponentInChildren<Canvas>()?.GetComponent<RectTransform>();
+        }
+
+        if (target == null) yield break;
+
+        Vector2 originalPos = target.anchoredPosition;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float x = UnityEngine.Random.Range(-1f, 1f) * magnitude;
+            float y = UnityEngine.Random.Range(-1f, 1f) * magnitude;
+            target.anchoredPosition = originalPos + new Vector2(x, y);
+            yield return null;
+        }
+        target.anchoredPosition = originalPos;
+    }
+
+    public void UpdateEnemyHP(int current, int max)
+{
         enemyHPBar.value  = current;
         enemyHPText.text  = $"{current} / {max}";
     }

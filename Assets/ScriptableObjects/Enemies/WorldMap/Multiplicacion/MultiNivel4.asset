@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyLevel: 4
   enemyTitle: Nivel4
-  enemyName: "Enemigo de Multiplicaci\xF3n 4"
+  enemyName: Conejo
   sprite: {fileID: 21300000, guid: e0aab8ef7a3e2664c9a41888a276b862, type: 3}
   animatorController: {fileID: 9100000, guid: 2b656825904332a4a9aea45e002fa3e5, type: 2}
-  maxHP: 135
+  maxHP: 150
   attackDamage: 25
   defense: 5
   useAddition: 0
@@ -25,9 +25,9 @@ MonoBehaviour:
   useMultiplication: 1
   useDivision: 0
   minNumber: 2
-  maxNumber: 8
-  questionTimeLimit: 13
+  maxNumber: 15
+  questionTimeLimit: 10
   damageMultiplier: 1
   criticalChance: 0
   criticalBonusDamage: 10
-  dodgeChance: 0
+  dodgeChance: 0.2
