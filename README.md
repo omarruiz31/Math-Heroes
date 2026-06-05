@@ -33,4 +33,3 @@ Este proyecto está dirigido a:
 - Entorno educativo atractivo y dinámico.
 
 
-ecto desarrollado como parte de una iniciativa académica orientada a la creación de herramientas tecnológicas para apoyar la enseñanza y el aprendizaje de las matemáticas.
