@@ -161,7 +161,7 @@ public class DialogueSystemSetup : EditorWindow
         promptTextRect.offsetMin = Vector2.zero;
         promptTextRect.offsetMax = Vector2.zero;
         TextMeshProUGUI promptText = promptTextObj.AddComponent<TextMeshProUGUI>();
-        promptText.text = "Presiona [E] para hablar";
+        promptText.text = "Presiona [E]";
         promptText.fontSize = 32;
         promptText.alignment = TextAlignmentOptions.CenterGeoAligned;
         promptText.color = Color.white;

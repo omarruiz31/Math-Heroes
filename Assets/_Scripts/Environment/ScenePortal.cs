@@ -31,7 +31,7 @@ public class ScenePortal : MonoBehaviour
                 // Mostrar cartel de interacción para viajar
                 if (DialogueManager.Instance != null)
                 {
-                    DialogueManager.Instance.ShowInteractPrompt(true, "Presiona [E] para viajar");
+                    DialogueManager.Instance.ShowInteractPrompt(true, "Pulsa [E] para viajar");
                 }
             }
             else

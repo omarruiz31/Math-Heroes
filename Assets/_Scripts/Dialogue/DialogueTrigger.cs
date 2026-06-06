@@ -32,7 +32,7 @@ public class DialogueTrigger : MonoBehaviour
             playerInRange = true;
             if (DialogueManager.Instance != null)
             {
-                DialogueManager.Instance.ShowInteractPrompt(true);
+                DialogueManager.Instance.ShowInteractPrompt(true, "Presiona [E] para hablar");
             }
         }
     }
