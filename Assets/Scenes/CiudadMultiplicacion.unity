@@ -1784,6 +1784,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6906285261006619473, guid: 2dd700bc1557946dcb88aec3660c0fd5,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6906285261006619473, guid: 2dd700bc1557946dcb88aec3660c0fd5,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6906285261006619473, guid: 2dd700bc1557946dcb88aec3660c0fd5,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.12
       objectReference: {fileID: 0}
@@ -1862,7 +1872,7 @@ PrefabInstance:
     - target: {fileID: 7865492114668445486, guid: 2dd700bc1557946dcb88aec3660c0fd5,
         type: 3}
       propertyPath: requiredUnlockName
-      value: MultiNivel4
+      value: MultiNivel5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2202,7 +2212,7 @@ PrefabInstance:
     - target: {fileID: 7865492114668445486, guid: 2dd700bc1557946dcb88aec3660c0fd5,
         type: 3}
       propertyPath: requiredUnlockName
-      value: MultiNivel1
+      value: MultiNivel2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3217,13 +3227,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6906285261006619473, guid: 2dd700bc1557946dcb88aec3660c0fd5,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6906285261006619473, guid: 2dd700bc1557946dcb88aec3660c0fd5,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6906285261006619473, guid: 2dd700bc1557946dcb88aec3660c0fd5,
+        type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.04
+      value: 2.01
       objectReference: {fileID: 0}
     - target: {fileID: 6906285261006619473, guid: 2dd700bc1557946dcb88aec3660c0fd5,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.25
+      value: -2.41
       objectReference: {fileID: 0}
     - target: {fileID: 6906285261006619473, guid: 2dd700bc1557946dcb88aec3660c0fd5,
         type: 3}
@@ -4689,6 +4709,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6906285261006619473, guid: 2dd700bc1557946dcb88aec3660c0fd5,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6906285261006619473, guid: 2dd700bc1557946dcb88aec3660c0fd5,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6906285261006619473, guid: 2dd700bc1557946dcb88aec3660c0fd5,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.95
       objectReference: {fileID: 0}
@@ -4767,7 +4797,7 @@ PrefabInstance:
     - target: {fileID: 7865492114668445486, guid: 2dd700bc1557946dcb88aec3660c0fd5,
         type: 3}
       propertyPath: requiredUnlockName
-      value: MultiNivel5
+      value: MultiNivel6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4968,7 +4998,7 @@ PrefabInstance:
     - target: {fileID: 7865492114668445486, guid: 2dd700bc1557946dcb88aec3660c0fd5,
         type: 3}
       propertyPath: requiredUnlockName
-      value: MultiNivel3
+      value: MultiNivel4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5098,6 +5128,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6906285261006619473, guid: 2dd700bc1557946dcb88aec3660c0fd5,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6906285261006619473, guid: 2dd700bc1557946dcb88aec3660c0fd5,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6906285261006619473, guid: 2dd700bc1557946dcb88aec3660c0fd5,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.803
       objectReference: {fileID: 0}
@@ -5176,7 +5216,7 @@ PrefabInstance:
     - target: {fileID: 7865492114668445486, guid: 2dd700bc1557946dcb88aec3660c0fd5,
         type: 3}
       propertyPath: requiredUnlockName
-      value: MultiNivel2
+      value: MultiNivel3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5515,7 +5555,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Presiona [E] para hablar
+  m_text: 'Presiona [E]'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9a14a8a1184c5f14fbce3338ea4d7a35, type: 2}
   m_sharedMaterial: {fileID: 1260715531048141648, guid: 9a14a8a1184c5f14fbce3338ea4d7a35,
@@ -5730,7 +5770,7 @@ MonoBehaviour:
   portraitImage: {fileID: 1391382069}
   typingSpeed: 0.02
   interactPrompt: {fileID: 1169432541}
-  interactPromptText: {fileID: 0}
+  interactPromptText: {fileID: 1825142966}
 --- !u!4 &1840272761
 Transform:
   m_ObjectHideFlags: 0

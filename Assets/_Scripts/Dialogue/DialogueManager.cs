@@ -64,7 +64,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void ShowInteractPrompt(bool show, string message = "Presiona [E] para hablar")
+    public void ShowInteractPrompt(bool show, string message = "Presiona [E]")
     {
         if (interactPrompt != null && !dialogueUI.activeSelf)
         {

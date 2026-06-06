@@ -1446,7 +1446,7 @@ MonoBehaviour:
   portraitImage: {fileID: 1762909739}
   typingSpeed: 0.02
   interactPrompt: {fileID: 27719823}
-  interactPromptText: {fileID: 0}
+  interactPromptText: {fileID: 644228485}
 --- !u!4 &270236147
 Transform:
   m_ObjectHideFlags: 0
@@ -2546,7 +2546,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Presiona [E] para hablar
+  m_text: 'Presiona [E]'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9a14a8a1184c5f14fbce3338ea4d7a35, type: 2}
   m_sharedMaterial: {fileID: 1260715531048141648, guid: 9a14a8a1184c5f14fbce3338ea4d7a35,
